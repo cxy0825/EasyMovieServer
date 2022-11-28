@@ -1,0 +1,26 @@
+server:
+  port: 8910
+spring:
+  application:
+    name: server-authorization
+  datasource:
+    username: root
+    password: 123456
+    type: com.mysql.cj.jdbc.MysqlDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/em_user?serverTimezone=GMT%2B8&characterEncoding=utf-8
+  cloud:
+    nacos:
+      server-addr: 192.168.188.1:8848
+      discovery:
+        username: nacos
+        password: nacos
+        ephemeral: false
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-not-delete-value: 0
+      logic-delete-value: 1

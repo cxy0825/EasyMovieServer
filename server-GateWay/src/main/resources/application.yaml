@@ -1,0 +1,22 @@
+server:
+  port: 80
+spring:
+  application:
+    name: server-GateWay
+  cloud:
+    nacos:
+      server-addr: 192.168.188.1:8848
+      discovery:
+        username: nacos
+        password: nacos
+        ephemeral: false
+    gateway:
+        
+      routes:
+        #        授权微服务
+        - id: server-authorization-route
+          uri: lb://server-authorization
+          predicates:
+            - Path=/user/**
+#          filters:
+#            - StripPrefix=1 #转发之前去掉第一层路径
