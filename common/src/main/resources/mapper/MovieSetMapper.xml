@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxy.mapper.MovieSetMapper">
+
+    <resultMap id="BaseResultMap" type="com.cxy.entry.MovieSet">
+            <id property="id" column="ID" jdbcType="BIGINT"/>
+            <result property="movieHouseId" column="movie_house_id" jdbcType="BIGINT"/>
+            <result property="filmId" column="film_id" jdbcType="BIGINT"/>
+            <result property="cinemaId" column="cinema_ID" jdbcType="BIGINT"/>
+            <result property="movieStartTime" column="movie_start_time" jdbcType="TIMESTAMP"/>
+            <result property="movieEndTime" column="movie_end_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,movie_house_id,film_id,
+        cinema_ID,movie_start_time,movie_end_time,
+        create_time,update_time,is_delete
+    </sql>
+</mapper>

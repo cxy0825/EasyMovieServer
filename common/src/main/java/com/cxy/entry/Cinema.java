@@ -4,16 +4,17 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 第三方信息用户表
+ * 电影院信息表
  *
- * @TableName oauths
+ * @TableName cinema
  */
-@TableName(value = "oauths")
+@TableName(value = "cinema")
 @Data
-public class Oauths implements Serializable {
+public class Cinema implements Serializable {
     /**
      *
      */
@@ -21,34 +22,33 @@ public class Oauths implements Serializable {
     private Long id;
 
     /**
-     * 对应user表中的用户ID
+     * 电影院名字
      */
-    private Long userId;
+    private String cinemaName;
 
     /**
-     * 第三方登陆类型 weibo、qq、wechat 等
+     * 经度
      */
-    private String oauthType;
+    private BigDecimal x;
 
     /**
-     * 第三方 uid 、openid 等
+     * 纬度
      */
-    private String oauthId;
+    private BigDecimal y;
 
     /**
-     * 创建时间
+     *
      */
     private LocalDateTime createTime;
 
     /**
-     * 修改时间
+     *
      */
     private LocalDateTime updateTime;
 
     /**
-     * 是否删除 0不删除 1删除
+     *
      */
-
 
     @TableLogic
     private Integer isDelete;

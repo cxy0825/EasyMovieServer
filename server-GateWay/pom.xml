@@ -16,15 +16,15 @@
         <!--            <artifactId>spring-boot-starter-web</artifactId>-->
         <!--        </dependency>-->
         <!--fegin组件-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <!-- Feign Client for loadBalancing -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-loadbalancer</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.cloud</groupId>-->
+        <!--            <artifactId>spring-cloud-starter-openfeign</artifactId>-->
+        <!--        </dependency>-->
+        <!--        &lt;!&ndash; Feign Client for loadBalancing &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.cloud</groupId>-->
+        <!--            <artifactId>spring-cloud-loadbalancer</artifactId>-->
+        <!--        </dependency>-->
         <!--        网关-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -35,6 +35,7 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

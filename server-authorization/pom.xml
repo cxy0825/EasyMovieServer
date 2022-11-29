@@ -41,6 +41,8 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
+
+
     </dependencies>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

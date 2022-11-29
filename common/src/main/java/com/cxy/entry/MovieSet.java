@@ -7,33 +7,43 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 用户表的拓展信息字段
+ * 排片信息
  *
- * @TableName user_info
+ * @TableName movie_set
  */
-@TableName(value = "user_info")
+@TableName(value = "movie_set")
 @Data
-public class UserInfo implements Serializable {
+public class MovieSet implements Serializable {
     /**
      *
      */
     @TableId(type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
-     *
+     * 电影放映厅ID
      */
-    private Integer userId;
+    private Long movieHouseId;
 
     /**
-     * 邮箱
+     * 影片ID
      */
-    private String email;
+    private Long filmId;
 
     /**
-     * 性别
+     * 电影院ID
      */
-    private String sex;
+    private Long cinemaId;
+
+    /**
+     * 电影开始时间
+     */
+    private LocalDateTime movieStartTime;
+
+    /**
+     * 电影结束时间
+     */
+    private LocalDateTime movieEndTime;
 
     /**
      *
@@ -48,7 +58,6 @@ public class UserInfo implements Serializable {
     /**
      *
      */
-
     @TableLogic
     private Integer isDelete;
 

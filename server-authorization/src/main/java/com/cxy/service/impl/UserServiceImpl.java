@@ -63,7 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
 
         LoginVo loginVo = new LoginVo();
-        //登录成功后生成token 并
+        //登录成功后去授权服务生成token
         loginVo.setTokenMap(authorizationService.createToken(user));
         BeanUtil.copyProperties(user, loginVo);
 
@@ -71,7 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return Result.ok().data(loginVo);
 
     }
-    
+
 }
 
 

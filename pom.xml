@@ -10,6 +10,8 @@
         <module>server-GateWay</module>
         <module>common</module>
         <module>server-authorization</module>
+        <module>server-movie</module>
+
     </modules>
     <name>EasyMovieServer</name>
     <description>EasyMovieServer</description>
@@ -19,8 +21,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
-        <spring-cloud-alibaba.version>2.2.2.RELEASE</spring-cloud-alibaba.version>
-        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+        <spring-cloud-alibaba.version>2.2.6.RELEASE</spring-cloud-alibaba.version>
+        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
         <mybatis-plus.version>3.4.1</mybatis-plus.version>
         <fastjson.version>1.2.29</fastjson.version>
         <httpclient.version>4.5.1</httpclient.version>

@@ -2,6 +2,7 @@ package com.cxy.service.impl;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import cn.hutool.jwt.JWTValidator;
@@ -19,8 +20,10 @@ import java.util.Map;
 public class AuthorizationImpl implements AuthorizationService {
     final byte[] key = "zxc5646@#@$".getBytes(StandardCharsets.UTF_8);
     DateTime now = DateUtil.date();
-    DateTime tokenTime = DateUtil.offsetMinute(now, 5);
-    DateTime refreshTokenTime = DateUtil.offsetDay(now, 10);
+    //    DateTime tokenTime = DateUtil.offsetMinute(now, 5);
+    DateTime tokenTime = DateUtil.offsetMonth(now, 10);
+    //    DateTime refreshTokenTime = DateUtil.offsetDay(now, 10);
+    DateTime refreshTokenTime = DateUtil.offsetMonth(now, 24);
 
 
     @Override
@@ -30,6 +33,7 @@ public class AuthorizationImpl implements AuthorizationService {
                 .setPayload("ID", user.getId())
                 .setPayload("phone", user.getPhone())
                 .setPayload("power", user.getPower())
+                .setPayload("type", "user") //普通用户
                 .setIssuedAt(now)//签发时间
                 .setExpiresAt(tokenTime)//过期时间
                 .setKey(key)
@@ -38,6 +42,7 @@ public class AuthorizationImpl implements AuthorizationService {
                 .setPayload("ID", user.getId())
                 .setPayload("phone", user.getPhone())
                 .setPayload("power", user.getPower())
+                .setPayload("type", "user")//普通用户
                 .setIssuedAt(now)//签发时间
                 .setExpiresAt(refreshTokenTime)//过期时间
                 .setKey(key)
@@ -49,12 +54,13 @@ public class AuthorizationImpl implements AuthorizationService {
         return tokenMap;
     }
 
-    //根据refreshToken生成token
+    //根据refreshToken生成token 普通用户的Token
     public String createTokenByRefreshToken(JWT refreshJwt) {
         String token = JWT.create()
                 .setPayload("ID", refreshJwt.getPayload("ID"))
                 .setPayload("phone", refreshJwt.getPayload("phone"))
                 .setPayload("power", refreshJwt.getPayload("power"))
+                .setPayload("type", "user")
                 .setIssuedAt(now)//签发时间
                 .setExpiresAt(tokenTime)//过期时间
                 .setKey(key)
@@ -75,6 +81,7 @@ public class AuthorizationImpl implements AuthorizationService {
         return refreshToken;
     }
 
+    //验证token是否合法
     @Override
     public Boolean verify(String token) {
         //先验证token签名是否正确
@@ -97,6 +104,7 @@ public class AuthorizationImpl implements AuthorizationService {
         return true;
     }
 
+    //检查token返回是否可以登录
     @Override
     public Result CheckToken(String token, String refreshToken) {
         Map<String, Object> resultMap = new HashMap<>();
@@ -111,8 +119,19 @@ public class AuthorizationImpl implements AuthorizationService {
         //如果合法
         if (refreshVerify) {
             //判断refreshToken中的ID是否和token中的ID一样
-            JWT jwt = JWTUtil.parseToken(token);
-            JWT refreshJwt = JWTUtil.parseToken(refreshToken);
+            JWT jwt = null;
+            JWT refreshJwt = null;
+            try {
+                jwt = JWTUtil.parseToken(token);
+                refreshJwt = JWTUtil.parseToken(refreshToken);
+            } catch (Exception e) {
+                return Result.fail(ResultEnum.LOGIN_EXPIRES);
+            }
+            //判断是否为空
+            if (ObjUtil.isEmpty(jwt) || ObjUtil.isEmpty(refreshJwt)) {
+                return Result.fail(ResultEnum.LOGIN_EXPIRES);
+            }
+            //判断两个token里面的id是否一样 ,防止别人伪造
             if (!jwt.getPayload("ID").equals(refreshJwt.getPayload("ID"))) {
                 return Result.fail(ResultEnum.LOGIN_EXPIRES);
             }

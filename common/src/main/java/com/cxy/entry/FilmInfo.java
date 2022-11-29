@@ -7,13 +7,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 第三方信息用户表
- *
- * @TableName oauths
+ * @TableName film_info
  */
-@TableName(value = "oauths")
+@TableName(value = "film_info")
 @Data
-public class Oauths implements Serializable {
+public class FilmInfo implements Serializable {
     /**
      *
      */
@@ -21,35 +19,33 @@ public class Oauths implements Serializable {
     private Long id;
 
     /**
-     * 对应user表中的用户ID
+     * 电影ID
      */
-    private Long userId;
+    private Long filmId;
 
     /**
-     * 第三方登陆类型 weibo、qq、wechat 等
+     * 宣传片地址
      */
-    private String oauthType;
+    private String videoUrl;
 
     /**
-     * 第三方 uid 、openid 等
+     * 海报地址
      */
-    private String oauthId;
+    private String posterUrl;
 
     /**
-     * 创建时间
+     *
      */
     private LocalDateTime createTime;
 
     /**
-     * 修改时间
+     *
      */
     private LocalDateTime updateTime;
 
     /**
-     * 是否删除 0不删除 1删除
+     *
      */
-
-
     @TableLogic
     private Integer isDelete;
 
