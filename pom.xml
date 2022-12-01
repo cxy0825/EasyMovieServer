@@ -11,6 +11,7 @@
         <module>common</module>
         <module>server-authorization</module>
         <module>server-movie</module>
+        <module>server-mongo</module>
 
     </modules>
     <name>EasyMovieServer</name>
@@ -99,11 +100,15 @@
                 <artifactId>httpclient</artifactId>
                 <version>${httpclient.version}</version>
             </dependency>
+            <!--            lombok-->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
+            <!--            devtools热部署-->
+
+
         </dependencies>
     </dependencyManagement>
 
@@ -125,6 +130,8 @@
                 <version>2.3.7.RELEASE</version>
                 <configuration>
                     <mainClass>com.cxy.easymovieserver.EasyMovieServerApplication</mainClass>
+                    <fork>true</fork>
+                    <addResources>true</addResources>
                 </configuration>
                 <executions>
                     <execution>

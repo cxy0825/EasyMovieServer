@@ -1,0 +1,17 @@
+server:
+  port: 8930
+spring:
+  application:
+    name: server-mongo
+  cloud:
+    nacos:
+
+      discovery:
+        server-addr: 192.168.188.1:8848
+        username: nacos
+        password: nacos
+        ephemeral: false
+  data:
+    mongodb:
+      #      uri: mongodb://192.168.188.137:27017/easyMovie?authSource=admin
+      uri: mongodb://192.168.188.137:27017/easyMovie

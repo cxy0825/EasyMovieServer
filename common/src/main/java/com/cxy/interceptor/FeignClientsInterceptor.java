@@ -16,18 +16,23 @@ public class FeignClientsInterceptor implements RequestInterceptor {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (null != requestAttributes) {
             HttpServletRequest request = requestAttributes.getRequest();
-            System.out.println(request.getHeader("token"));
-            System.out.println(request.getHeader("refreshToken"));
-            if (null != request) {
-                Enumeration<String> headerNames = request.getHeaderNames();
-                if (headerNames != null) {
-                    while (headerNames.hasMoreElements()) {
-                        String name = headerNames.nextElement();
-                        String values = request.getHeader(name);
-                        requestTemplate.header(name, values);
+//            System.out.println(request.getHeader("token"));
+//            System.out.println(request.getHeader("refreshToken"));
+            Enumeration<String> headerNames = request.getHeaderNames();
+            if (headerNames != null) {
+                while (headerNames.hasMoreElements()) {
+                    String name = headerNames.nextElement();
+                    String values = request.getHeader(name);
+
+                    // 跳过 content-length
+                    if (name.equals("content-length")) {
+                        continue;
                     }
+
+                    requestTemplate.header(name, values);
                 }
             }
+
         }
     }
 }

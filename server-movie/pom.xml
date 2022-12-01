@@ -46,6 +46,7 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+
     </dependencies>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

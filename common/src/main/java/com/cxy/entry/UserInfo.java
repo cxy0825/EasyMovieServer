@@ -1,6 +1,7 @@
 package com.cxy.entry;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -38,11 +39,14 @@ public class UserInfo implements Serializable {
     /**
      *
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private LocalDateTime createTime;
+    ;
 
     /**
      *
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private LocalDateTime updateTime;
 
     /**
@@ -50,6 +54,7 @@ public class UserInfo implements Serializable {
      */
 
     @TableLogic
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer isDelete;
 
     @TableField(exist = false)

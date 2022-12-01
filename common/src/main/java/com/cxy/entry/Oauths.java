@@ -1,6 +1,7 @@
 package com.cxy.entry;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -38,11 +39,14 @@ public class Oauths implements Serializable {
     /**
      * 创建时间
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private LocalDateTime createTime;
+    ;
 
     /**
      * 修改时间
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private LocalDateTime updateTime;
 
     /**
@@ -51,6 +55,7 @@ public class Oauths implements Serializable {
 
 
     @TableLogic
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer isDelete;
 
     @TableField(exist = false)

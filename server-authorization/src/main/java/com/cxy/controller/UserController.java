@@ -39,14 +39,6 @@ public class UserController {
         return authorizationService.CheckToken(token, refreshToken);
     }
 
-    @PostMapping("/aa")
-    public void aa() {
-        System.out.println("===========================");
-    }
-
-    @GetMapping("/t")
-    public Result t() {
-        return Result.ok();
-    }
+    
 }
 

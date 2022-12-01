@@ -56,7 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             if (user == null) {
                 return Result.fail(ResultEnum.MISS_USER);
             }
-            System.out.println(user);
+//            System.out.println(user);
         } else {
             return Result.fail(ResultEnum.ERROR_PARAMS);
         }

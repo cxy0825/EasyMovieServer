@@ -1,4 +1,4 @@
-package com.cxy.clients;
+package com.cxy.clients.authorization;
 
 import com.cxy.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;

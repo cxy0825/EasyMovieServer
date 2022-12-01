@@ -1,8 +1,11 @@
-package com.cxy.intercepter;
+package com.cxy.interceptor;
+
 
 import cn.hutool.jwt.JWT;
+import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.cxy.Utils.ThreadLocalUtil;
 import com.cxy.result.Result;
 import com.cxy.result.ResultEnum;
 import org.springframework.util.StringUtils;
@@ -14,9 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class Verify implements HandlerInterceptor {
-    //    @Resource
-//    AuthorizationClient authorizationClient;
+//针对后台管理员级别的token验证拦截器
+public class VerifyAdminInterceptor implements HandlerInterceptor {
     //权限等级 至少是管理员级以上
     final int POWER_LEVEL = 1;
     //权限类型 必须是admin
@@ -26,23 +28,11 @@ public class Verify implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //获得请求头中的token
         String token = request.getHeader("token");
-//        String refreshToken = request.getHeader("refreshToken");
         //判空验证
         if (StringUtils.isEmpty(token)) {
             this.loginOut(response);
             return false;
         }
-//        Result verify = authorizationClient.verify(token, refreshToken);
-//        Result verify = authorizationClient.verify(token, refreshToken);
-//        Result verify = authorizationClient.t();
-//        authorizationClient.aa();
-
-        //如果是空 返回登录过期
-        //只有返回的code==20000才为成功验证token合法
-//        if (ObjUtil.isEmpty(verify) || verify.getCode() != 20000) {
-//            this.loginOut(response);
-//            return false;
-//        }
         //鉴定权限
         JWT jwt = null;
         try {
@@ -56,6 +46,9 @@ public class Verify implements HandlerInterceptor {
 
         String type = (String) jwt.getPayload("type");
         Integer power = (Integer) jwt.getPayload("power");
+        //写入到threadlocal中
+        JWTPayload payload = jwt.getPayload();
+        ThreadLocalUtil.set(payload);
         //超级管理员就直接过
         if (type.equals("root")) {
             return true;
@@ -76,7 +69,7 @@ public class Verify implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+        ThreadLocalUtil.remove();
     }
 
     public void loginOut(HttpServletResponse response) throws IOException {
