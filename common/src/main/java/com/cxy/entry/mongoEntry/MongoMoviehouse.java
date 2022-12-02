@@ -31,7 +31,7 @@ public class MongoMoviehouse implements Serializable {
     //已经使用过的座位信息
     //稀疏矩阵的压缩 数组第一项永远是 有多少行 多少列 有几个值
     //0表示没有人购买 1表示有人购买 2表示维修中
-    private Integer[] seatInfo = new Integer[1];
+    private int[][] seatInfo;
 
 
 }

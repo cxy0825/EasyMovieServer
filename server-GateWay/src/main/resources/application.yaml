@@ -18,7 +18,7 @@ spring:
         - id: server-authorization-route
           uri: lb://server-authorization
           predicates:
-            - Path=/user/**
+            - Path=/user/**,/admin/**
         #          filters:
         #            - StripPrefix=1 #转发之前去掉第一层路径
         # 电影服务

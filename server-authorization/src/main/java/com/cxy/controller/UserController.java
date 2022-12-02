@@ -39,6 +39,6 @@ public class UserController {
         return authorizationService.CheckToken(token, refreshToken);
     }
 
-    
+
 }
 

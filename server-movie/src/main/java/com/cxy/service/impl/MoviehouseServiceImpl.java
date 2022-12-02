@@ -129,6 +129,12 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
             mongoMoviehouse.setId(movieHouseID);
         } else {
             mongoMoviehouse = BeanUtil.copyProperties(moviehouse, MongoMoviehouse.class);
+            //把有多少行多少列添加到稀疏数组的第0项
+            int[][] arr = new int[1][3];
+            arr[0][0] = moviehouse.getRowNum();
+            arr[0][1] = moviehouse.getColNum();
+            arr[0][2] = 0;
+            mongoMoviehouse.setSeatInfo(arr);
         }
         //添加到mongo中
         Result result = mongoClient.insertMovieHouse(mongoMoviehouse);

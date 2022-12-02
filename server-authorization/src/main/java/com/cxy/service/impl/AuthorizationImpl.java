@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import cn.hutool.jwt.JWTValidator;
+import com.cxy.entry.Administrator;
 import com.cxy.entry.User;
 import com.cxy.result.Result;
 import com.cxy.result.ResultEnum;
@@ -52,6 +53,24 @@ public class AuthorizationImpl implements AuthorizationService {
         tokenMap.put("token", token);
         tokenMap.put("refreshToken", refreshToken);
         return tokenMap;
+    }
+
+    @Override
+    public String createToken(Administrator administrator) {
+        String type = "admin";
+        if (administrator.getPassword().equals("root")) {
+            type = "root";
+        }
+        String token = JWT.create()
+                .setPayload("ID", administrator.getId())
+                .setPayload("cinemaID", administrator.getCinemaId())
+                .setPayload("power", administrator.getPower())
+                .setPayload("type", type)
+                .setIssuedAt(now)//签发时间
+                .setExpiresAt(tokenTime)//过期时间
+                .setKey(key)
+                .sign();
+        return token;
     }
 
     //根据refreshToken生成token 普通用户的Token
