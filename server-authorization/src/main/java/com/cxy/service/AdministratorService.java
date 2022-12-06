@@ -13,4 +13,6 @@ import com.cxy.result.Result;
 public interface AdministratorService extends IService<Administrator> {
 
     Result login(AdministratorParam administratorParam);
+
+    Result getInfo(String token);
 }

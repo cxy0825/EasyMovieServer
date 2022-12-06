@@ -14,19 +14,19 @@ public class MongoMovieHouseController {
     MongoMoviehouseServer mongoMoviehouseServer;
 
     /**
-     * 通过id获取电影院放映厅
+     * 通过id获取电影院放映厅下位置信息
      *
      * @param movieHouseID 电影院放映厅ID
      * @return {@link Result}
      *///查询某个电影播放厅座位信息
     @GetMapping("/movieHouse/info/{movieHouseID}")
-    public Result getMovieHouseById(@PathVariable("movieHouseID") Long movieHouseID) {
+    public Result getSeatInfoById(@PathVariable("movieHouseID") Long movieHouseID) {
 
         return mongoMoviehouseServer.getMovieHouseById(movieHouseID);
     }
 
     /**
-     * 插入电影院放映厅信息
+     * 插入电影院放映厅信息到mongo
      *
      * @return {@link Result}
      */
@@ -37,15 +37,23 @@ public class MongoMovieHouseController {
     }
 
     /**
-     * 通过id更新放映厅的座位信息
+     * 在对应ID的放映厅下插入位置信息
      *
      * @param movieHouseID 电影院id
      * @param arr          稀疏数组
      * @return {@link Result}
      */
-    @PostMapping("/movieHouse/update/{movieHouseID}")
-    public Result updateSeatById(@PathVariable("movieHouseID") Long movieHouseID, @RequestBody int[] arr) {
+    @PostMapping("/movieHouse/insert/{movieHouseID}")
+    public Result insertSeatByID(@PathVariable("movieHouseID") Long movieHouseID, @RequestBody int[] arr) {
 
-        return mongoMoviehouseServer.updateSeatById(movieHouseID, arr);
+        return mongoMoviehouseServer.insertSeatByID(movieHouseID, arr);
     }
+
+    @PostMapping("/movieHouse/update/{movieHouseID}")
+    public Result updateSeatByID(@PathVariable("movieHouseID") Long movieHouseID, @RequestBody Integer[] arr) {
+
+        return mongoMoviehouseServer.updateSeatByID(movieHouseID, arr);
+    }
+
+
 }

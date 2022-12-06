@@ -58,7 +58,7 @@ public class AuthorizationImpl implements AuthorizationService {
     @Override
     public String createToken(Administrator administrator) {
         String type = "admin";
-        if (administrator.getPassword().equals("root")) {
+        if (administrator.getName().equals("root")) {
             type = "root";
         }
         String token = JWT.create()

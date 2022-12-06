@@ -6,13 +6,12 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.naming.event.NamingEvent;
 
 @Slf4j
-@Component
+//@Component
 public class NacosServerListListener implements ServerListListener {
 
     @Autowired

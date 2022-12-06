@@ -45,12 +45,13 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
         //如果是 "root"就默认查询全部
         JWTPayload jwtPayload = (JWTPayload) ThreadLocalUtil.get();
         LambdaQueryWrapper<Moviehouse> queryWrapper = new LambdaQueryWrapper<>();
+        System.out.println(jwtPayload.getClaim("type"));
 //        如果不是超级管理员就根据ID进行查询
         if (!jwtPayload.getClaim("type").equals("root")) {
             queryWrapper.eq(Moviehouse::getCinemaId, jwtPayload.getClaim("cinemaID"));
         }
         //跟上查询条件
-        queryWrapper.eq(!StringUtils.isEmpty(name), Moviehouse::getMovieHouseName, name);
+        queryWrapper.like(!StringUtils.isEmpty(name), Moviehouse::getMovieHouseName, name);
 
         Page<Moviehouse> movieHousePage = new Page<>(page, limit);
 
@@ -73,6 +74,35 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
         }).collect(Collectors.toList());
         movieHouseVoPage.setRecords(collect);
         return Result.ok().data(movieHouseVoPage);
+    }
+
+    @Override
+    public Result getMovieHouseWithCinemaById(Long id) {
+        //根据身份进行判断 如果管理员type是"admin"就按照里面的ID进行查询
+        //如果是 "root"就默认查询全部
+        JWTPayload jwtPayload = (JWTPayload) ThreadLocalUtil.get();
+        LambdaQueryWrapper<Moviehouse> queryWrapper = new LambdaQueryWrapper<>();
+//        如果不是超级管理员就根据ID进行查询
+        if (!jwtPayload.getClaim("type").equals("root")) {
+            queryWrapper.eq(Moviehouse::getCinemaId, jwtPayload.getClaim("cinemaID"));
+        }
+        queryWrapper.eq(Moviehouse::getId, id);
+        Moviehouse moviehouse = baseMapper.selectOne(queryWrapper);
+
+        return Result.ok().data(moviehouse);
+    }
+
+    @Override
+    public Result updateSeatById(Long movieHouseID, HashMap<String, int[]> map) {
+        int[] arrs = new int[3];
+        try {
+            arrs = map.get("arr");
+        } catch (Exception e) {
+            return Result.fail(ResultEnum.ERROR_PARAMS);
+        }
+        //远程调用mongo服务
+        return mongoClient.updateSeatById(movieHouseID, arrs);
+
     }
 
     @Override
@@ -145,8 +175,9 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
         return Result.fail();
     }
 
+
     @Override
-    public Result updateSeatById(Long movieHouseID, HashMap<String, int[]> map) {
+    public Result insertSeatByID(Long movieHouseID, HashMap<String, int[]> map) {
         int[] arrs = new int[3];
         try {
             arrs = map.get("arr");
@@ -154,9 +185,10 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
             return Result.fail(ResultEnum.ERROR_PARAMS);
         }
         //远程调用mongo服务
-        return mongoClient.updateSeatById(movieHouseID, arrs);
+        return mongoClient.insertSeatByID(movieHouseID, arrs);
 
     }
+
 
     //判断当前用户是否为超级管理员
     public Boolean isRoot() {

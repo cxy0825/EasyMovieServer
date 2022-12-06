@@ -18,6 +18,11 @@ public interface MongoClient {
     @GetMapping("/mongo/movieHouse/info/{movieHouseID}")
     Result getMovieHouseById(@PathVariable("movieHouseID") Long movieHouseID);
 
+    @PostMapping("/mongo/movieHouse/insert/{movieHouseID}")
+    Result insertSeatByID(@PathVariable("movieHouseID") Long movieHouseID, @RequestBody int[] arr);
+
     @PostMapping("/mongo/movieHouse/update/{movieHouseID}")
     Result updateSeatById(@PathVariable("movieHouseID") Long movieHouseID, @RequestBody int[] arr);
+
+
 }

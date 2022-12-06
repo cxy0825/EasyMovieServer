@@ -25,12 +25,14 @@ public class UserController {
     @Resource
     private AuthorizationService authorizationService;
 
+    //普通用户的登录
     @PostMapping("/login")
     public Result login(@RequestBody LoginParam loginParam) {
         return userService.login(loginParam);
     }
 
     //token认证
+    //普通用户的token认证和刷新
     @PostMapping("/verify")
     public Result verify(
             @RequestHeader("token") String token,

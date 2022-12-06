@@ -29,6 +29,14 @@ public class MovieHouseController {
         return moviehouseService.getMovieHouseWithCinema(page, limit, name);
     }
 
+    //根据ID获取电影院信息
+    @GetMapping("/movieHouse/list/{ID}")
+    public Result getMovieHouseById(
+            @PathVariable("ID") Long ID
+    ) {
+        return moviehouseService.getMovieHouseWithCinemaById(ID);
+    }
+
     //查看电影厅的座位信息
     @GetMapping("public/movieHouse/info/{movieHouseID}")
     public Result getMovieHouseInfo(@PathVariable("movieHouseID") Long movieHouseID) {
@@ -57,6 +65,22 @@ public class MovieHouseController {
     }
 
     /**
+     * 通过电影院ID插入座位信息
+     *
+     * @param movieHouseID 电影院id
+     * @param map          请求体 稀疏矩阵压缩后的数组{ "arr":[0,0,1] }
+     * @return {@link Result}
+     */
+    @PostMapping("/movieHouse/insert/{movieHouseID}")
+    public Result insertSeatByID(
+            @PathVariable("movieHouseID") Long movieHouseID,
+            @RequestBody HashMap<String, int[]> map
+    ) {
+
+        return moviehouseService.insertSeatByID(movieHouseID, map);
+    }
+
+    /**
      * 通过电影院ID更新座位信息
      *
      * @param movieHouseID 电影院id
@@ -68,7 +92,7 @@ public class MovieHouseController {
             @PathVariable("movieHouseID") Long movieHouseID,
             @RequestBody HashMap<String, int[]> map
     ) {
-        
+
         return moviehouseService.updateSeatById(movieHouseID, map);
     }
 }

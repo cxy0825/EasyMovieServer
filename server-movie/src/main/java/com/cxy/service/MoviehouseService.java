@@ -22,5 +22,9 @@ public interface MoviehouseService extends IService<Moviehouse> {
 
     Result getMovieHouseInfo(Long movieHouseID);
 
+    Result insertSeatByID(Long movieHouseID, HashMap<String, int[]> map);
+
+    Result getMovieHouseWithCinemaById(Long id);
+
     Result updateSeatById(Long movieHouseID, HashMap<String, int[]> map);
 }

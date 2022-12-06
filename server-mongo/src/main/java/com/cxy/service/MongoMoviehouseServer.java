@@ -10,5 +10,7 @@ public interface MongoMoviehouseServer {
     Result insertData(MongoMoviehouse mongoMoviehouse);
 
 
-    Result updateSeatById(Long movieHouseID, int[] arr);
+    Result insertSeatByID(Long movieHouseID, int[] arr);
+
+    Result updateSeatByID(Long movieHouseID, Integer[] arr);
 }
