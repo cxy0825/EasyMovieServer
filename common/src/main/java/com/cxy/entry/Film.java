@@ -6,6 +6,8 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 电影影片信息
@@ -45,10 +47,19 @@ public class Film implements Serializable {
      * 电影评分
      */
     private Double score;
+    //电影宣传视频地址
+    @TableField(exist = false)
+    private Set<String> videoUrls = new HashSet<>();
+    //电影宣传海报地址
+    @TableField(exist = false)
+    private Set<String> posterUrls = new HashSet<>();
 
+    //电影标签
+    private Set<String> tags = new HashSet<>();
     /**
      *
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private LocalDateTime credateTime;
 
     /**

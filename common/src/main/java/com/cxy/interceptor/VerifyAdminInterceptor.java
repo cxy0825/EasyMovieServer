@@ -8,7 +8,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.cxy.Utils.ThreadLocalUtil;
 import com.cxy.result.Result;
 import com.cxy.result.ResultEnum;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,21 +25,14 @@ public class VerifyAdminInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //获得请求头中的token
+
         String token = request.getHeader("token");
-        //判空验证
-        if (StringUtils.isEmpty(token)) {
-            this.loginOut(response);
-            return false;
-        }
-        //鉴定权限
+
         JWT jwt = null;
         try {
             jwt = JWTUtil.parseToken(token);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        if (jwt == null) {
             loginOut(response);
         }
 
@@ -49,17 +41,7 @@ public class VerifyAdminInterceptor implements HandlerInterceptor {
         //写入到threadlocal中
         JWTPayload payload = jwt.getPayload();
         ThreadLocalUtil.set(payload);
-        //超级管理员就直接过
-        if (type.equals("root")) {
-            return true;
-        }
-        //如果是普通管理员就放过
-        else if (POWER_TYPE.equals(type) && power >= POWER_LEVEL) {
-            return true;
-        }
-        //不是普通管理员并且权限等级等于1的拦截
-        loginOut(response);
-        return false;
+        return true;
     }
 
     @Override

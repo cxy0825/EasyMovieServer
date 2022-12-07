@@ -43,6 +43,7 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
     public Result getMovieHouseWithCinema(Integer page, Integer limit, String name) {
         //根据身份进行判断 如果管理员type是"admin"就按照里面的ID进行查询
         //如果是 "root"就默认查询全部
+
         JWTPayload jwtPayload = (JWTPayload) ThreadLocalUtil.get();
         LambdaQueryWrapper<Moviehouse> queryWrapper = new LambdaQueryWrapper<>();
         System.out.println(jwtPayload.getClaim("type"));

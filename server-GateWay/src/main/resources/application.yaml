@@ -26,6 +26,7 @@ spring:
           uri: lb://server-movie
           predicates:
             - Path=/movie/**
+                  
         #mongo服务
         - id: server-mongo-route
           uri: lb://server-mongo

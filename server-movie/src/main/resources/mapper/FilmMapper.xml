@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cxy.mapper.FilmMapper">
+    <select id="getFilmInfo" resultType="com.cxy.entry.Film"> <!--resultMap="filmInfoResult"-->
+        select film.*, film_info.poster_url, film_info.video_url
+        from film,film_info
+        where film.ID = #{ID}
+        and film.ID = film_info.film_ID
+    </select>
+    <resultMap id="filmInfoResult" type="com.cxy.entry.Film" autoMapping="true">
+        <id property="id" column="ID"/>
+        <collection property="filmInfos" ofType="com.cxy.entry.FilmInfo" autoMapping="true">
+            <id property="id" column="ID"/>
+            <result property="filmId" column="film_ID"/>
+            <result property="videoUrl" column="videoUrl"/>
+            <result property="posterUrl" column="posterUrl"/>
+        </collection>
+    </resultMap>
+</mapper>

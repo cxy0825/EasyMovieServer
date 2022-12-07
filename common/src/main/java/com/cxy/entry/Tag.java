@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  *
  * @TableName tag
  */
-@TableName(value = "tag")
+@TableName(value = "`tag`")
 @Data
 public class Tag implements Serializable {
     /**
@@ -24,7 +24,7 @@ public class Tag implements Serializable {
     /**
      * 标签名称
      */
-    private String tag;
+    private String tagName;
 
     /**
      *
