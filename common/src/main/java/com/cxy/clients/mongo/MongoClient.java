@@ -1,5 +1,6 @@
 package com.cxy.clients.mongo;
 
+import com.cxy.entry.Film;
 import com.cxy.entry.mongoEntry.MongoMoviehouse;
 import com.cxy.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -24,5 +25,12 @@ public interface MongoClient {
     @PostMapping("/mongo/movieHouse/update/{movieHouseID}")
     Result updateSeatById(@PathVariable("movieHouseID") Long movieHouseID, @RequestBody int[] arr);
 
+    @GetMapping("mongo/public/film/info/{ID}")
+    Result getFilmInfoByID(@PathVariable("ID") Long ID);
 
+    @PostMapping("mongo/public/film/info/insert")
+    Result insertFilmInfo(@RequestBody Film film);
+
+    @PostMapping("mongo/public/film/info/delete/{ID}")
+    boolean deleteFilmInfoById(@PathVariable("ID") Long ID);
 }

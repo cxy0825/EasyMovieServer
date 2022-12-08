@@ -2,6 +2,8 @@ package com.cxy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cxy.entry.FilmInfo;
+import com.cxy.result.Result;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Cccxy
@@ -10,4 +12,8 @@ import com.cxy.entry.FilmInfo;
  */
 public interface FilmInfoService extends IService<FilmInfo> {
 
+
+    Result updatePoster(MultipartFile multipartFile, Long id);
+
+    Result updateVideo(MultipartFile multipartFile, Long id);
 }

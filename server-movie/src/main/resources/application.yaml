@@ -17,7 +17,11 @@ spring:
         server-addr: 43.142.147.67:8848
         username: nacos
         password: nacos
-#        ephemeral: false
+        # ephemeral: false
+  servlet:
+    multipart:
+      max-file-size: 2048MB
+      max-request-size: 1024MB
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -25,4 +29,3 @@ mybatis-plus:
     db-config:
       logic-not-delete-value: 0
       logic-delete-value: 1
-

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cxy.mapper.MovieSetMapper">
+    <select id="getMovieSetInfoById" resultType="com.cxy.Dto.MovieSetDto">
+        select movie_set.*,
+               moviehouse.movie_house_name,
+               film.film_name,
+               film.duration,
+               cinema.cinema_name
+        from movie_set,
+             moviehouse,
+             film,
+             cinema
+        where movie_set.ID = #{ID}
+          and movie_set.movie_house_id = moviehouse.ID
+          and movie_set.film_id = film.ID
+          and moviehouse.cinema_ID = cinema.ID
+
+    </select>
+    <select id="getMovieSetInfo" resultType="com.cxy.Dto.MovieSetDto">
+        select movie_set.*,
+               moviehouse.movie_house_name,
+               film.film_name,
+               film.duration,
+               cinema.cinema_name
+        from movie_set,
+             moviehouse,
+             film,
+             cinema
+        where movie_set.movie_house_id = moviehouse.ID
+          and movie_set.film_id = film.ID
+          and moviehouse.cinema_ID = cinema.ID
+    </select>
+    <select id="getMovieSetInfoByFilmName" resultType="com.cxy.Dto.MovieSetDto">
+        select movie_set.*,
+               moviehouse.movie_house_name,
+               film.film_name,
+               film.duration,
+               cinema.cinema_name
+        from movie_set,
+             moviehouse,
+             film,
+             cinema
+        where film.film_name like concat('%', #{name}, '%')
+          and movie_set.movie_house_id = moviehouse.ID
+          and movie_set.film_id = film.ID
+          and moviehouse.cinema_ID = cinema.ID
+    </select>
+
+</mapper>

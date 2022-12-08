@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cxy.mapper.FilmMapper">
-    <select id="getFilmInfo" resultType="com.cxy.entry.Film"> <!--resultMap="filmInfoResult"-->
-        select film.*, film_info.poster_url, film_info.video_url
-        from film,film_info
+    <select id="getFilmInfo" resultMap="filmInfoResult"> <!--resultMap="filmInfoResult"-->
+        select film.*, film_info.poster_url, film_info.video_url,tag.tag_name
+        from film,film_info,tag,tag_index
         where film.ID = #{ID}
         and film.ID = film_info.film_ID
+        and film.ID = tag_index.film_ID
+        and tag_index.tag_ID = tag.ID
+
     </select>
     <resultMap id="filmInfoResult" type="com.cxy.entry.Film" autoMapping="true">
         <id property="id" column="ID"/>
-        <collection property="filmInfos" ofType="com.cxy.entry.FilmInfo" autoMapping="true">
-            <id property="id" column="ID"/>
-            <result property="filmId" column="film_ID"/>
-            <result property="videoUrl" column="videoUrl"/>
-            <result property="posterUrl" column="posterUrl"/>
+        <collection property="videoUrls" ofType="java.lang.String">
+            <result column="video_url"/>
+        </collection>
+        <collection property="posterUrls" ofType="java.lang.String">
+            <result column="poster_url"/>
+        </collection>
+        <collection property="tags" ofType="java.lang.String">
+            <result column="tag_name"/>
         </collection>
     </resultMap>
 </mapper>

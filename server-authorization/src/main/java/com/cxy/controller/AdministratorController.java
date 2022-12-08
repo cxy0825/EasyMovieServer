@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("admin")
+@RequestMapping("/admin")
 public class AdministratorController {
     @Resource
     AdministratorService administratorService;
 
     //管理员的登录
-    @PostMapping("/login")
+    @PostMapping("/public/login")
     public Result login(@RequestBody AdministratorParam administratorParam) {
         return administratorService.login(administratorParam);
     }

@@ -1,8 +1,10 @@
 package com.cxy.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cxy.clients.mongo.MongoClient;
 import com.cxy.entry.Film;
 import com.cxy.mapper.FilmMapper;
+import com.cxy.result.Result;
 import com.cxy.service.FilmService;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +20,33 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
         implements FilmService {
     @Resource
     FilmMapper filmMapper;
+    @Resource
+    MongoClient mongoClient;
 
     @Override
     public Film getFilmInfo(Long ID) {
         return filmMapper.getFilmInfo(ID);
 
     }
+
+    @Override
+    public Result getFilmInfoByID(Long ID) {
+        //先去查询mongo中有没有
+        Result filmInfoByID = mongoClient.getFilmInfoByID(ID);
+        if (filmInfoByID.getData() != null) {
+            return filmInfoByID;
+        }
+        //再去查数据库
+        Film filmInfo = filmMapper.getFilmInfo(ID);
+        //存到mongo中
+        mongoClient.insertFilmInfo(filmInfo);
+        //返回结果
+        return Result.ok().data(filmInfo);
+
+
+    }
+    
+
 }
 
 

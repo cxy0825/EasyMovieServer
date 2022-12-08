@@ -2,6 +2,7 @@ package com.cxy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cxy.entry.Film;
+import com.cxy.result.Result;
 
 /**
  * @author Cccxy
@@ -11,4 +12,6 @@ import com.cxy.entry.Film;
 public interface FilmService extends IService<Film> {
 
     Film getFilmInfo(Long ID);
+
+    Result getFilmInfoByID(Long ID);
 }

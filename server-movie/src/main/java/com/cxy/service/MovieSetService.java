@@ -1,7 +1,10 @@
 package com.cxy.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cxy.Dto.MovieSetDto;
 import com.cxy.entry.MovieSet;
+import com.cxy.result.Result;
 
 /**
  * @author Cccxy
@@ -10,4 +13,12 @@ import com.cxy.entry.MovieSet;
  */
 public interface MovieSetService extends IService<MovieSet> {
 
+    MovieSetDto getMovieSetInfoById(Long ID);
+
+    Page<MovieSetDto> getMovieSetInfo(Page<MovieSetDto> movieSetPage);
+
+    Page<MovieSetDto> getMovieSetInfoByFilmName(Page<MovieSetDto> movieSetPage, String name);
+
+
+    Result updateMovieSetInfo(MovieSet movieSet);
 }

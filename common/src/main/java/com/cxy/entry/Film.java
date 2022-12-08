@@ -55,6 +55,7 @@ public class Film implements Serializable {
     private Set<String> posterUrls = new HashSet<>();
 
     //电影标签
+    @TableField(exist = false)
     private Set<String> tags = new HashSet<>();
     /**
      *
