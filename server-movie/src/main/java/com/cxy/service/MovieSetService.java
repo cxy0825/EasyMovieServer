@@ -21,4 +21,8 @@ public interface MovieSetService extends IService<MovieSet> {
 
 
     Result updateMovieSetInfo(MovieSet movieSet);
+
+    Result addMovieSetInfo(MovieSet movieSet);
+
+    Result getLastMovieInfo(Long movieHouseID);
 }

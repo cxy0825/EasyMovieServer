@@ -24,6 +24,10 @@ public class Film implements Serializable {
     private Long id;
 
     /**
+     * 电影院ID
+     */
+    private Long cinemaId;
+    /**
      * 影片名字
      */
     private String filmName;

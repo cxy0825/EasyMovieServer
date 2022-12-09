@@ -1,5 +1,6 @@
 package com.cxy.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.Dto.MovieSetDto;
@@ -7,13 +8,15 @@ import com.cxy.entry.Film;
 import com.cxy.entry.MovieSet;
 import com.cxy.mapper.MovieSetMapper;
 import com.cxy.result.Result;
+import com.cxy.result.ResultEnum;
 import com.cxy.service.FilmService;
 import com.cxy.service.MovieSetService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 /**
  * @author Cccxy
@@ -48,18 +51,82 @@ public class MovieSetServiceImpl extends ServiceImpl<MovieSetMapper, MovieSet>
     }
 
     @Override
+    @Transactional
     public Result updateMovieSetInfo(MovieSet movieSet) {
         //根据filmId获取电影的时长
         Long filmId = movieSet.getFilmId();
 
         Film film = filmService.getById(filmId);
-
+        if (film == null) {
+            return Result.fail(ResultEnum.ERROR_PARAMS);
+        }
         Double duration = film.getDuration();
         //开始时间+电影时长 = 结束时间
         LocalDateTime movieStartTime = movieSet.getMovieStartTime();
         //计算出结束时间
-        LocalDateTime movieEndTime = movieStartTime.plus(duration.longValue(), ChronoUnit.MINUTES);
-        return null;
+        LocalDateTime movieEndTime = movieStartTime.plusMinutes(duration.longValue());
+        movieSet.setMovieEndTime(movieEndTime);
+        //修改数据库
+        int i = baseMapper.updateById(movieSet);
+        if (i > 0) {
+            //数据库进行查验
+            //查询数据库寻找这个放映厅的时间段包不包含  修改后的时间
+            Integer count = baseMapper.checkTime(movieStartTime, movieEndTime, movieSet.getMovieHouseId());
+
+            //修改后,按照开始时间和结束时间查找应该只有一条数据,如果出现数据的条数大于1条就说明电影厅播放电影的时间重叠了,进行事务回滚
+            if (count > 1) {
+                //播放电影时间重叠,回滚事务
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return Result.fail(ResultEnum.TIME_OVERLAP);
+            } else {
+                return Result.ok();
+            }
+
+        } else {
+            return Result.fail().message("数据库出错,数据更新失败");
+        }
+
+    }
+
+    @Override
+    public Result addMovieSetInfo(MovieSet movieSet) {
+        //添加的时候先判断新加进来的排片记录开始时间和结束时间是否和现有的冲突
+        //根据filmId获取电影的时长
+        Long filmId = movieSet.getFilmId();
+
+        Film film = filmService.getById(filmId);
+        if (film == null) {
+            return Result.fail(ResultEnum.ERROR_PARAMS);
+        }
+        Double duration = film.getDuration();
+        //开始时间+电影时长 = 结束时间
+        LocalDateTime movieStartTime = movieSet.getMovieStartTime();
+        //计算出结束时间
+        LocalDateTime movieEndTime = movieStartTime.plusMinutes(duration.longValue());
+        //查询数据库寻找这个放映厅的时间段包不包含  修改后的时间
+        Integer count = baseMapper.checkTime(movieStartTime, movieEndTime, movieSet.getMovieHouseId());
+        if (count >= 1) {
+            return Result.fail(ResultEnum.TIME_OVERLAP);
+        } else {//如果时间没有重叠就添加这条记录
+            movieSet.setMovieEndTime(movieEndTime);
+            baseMapper.insert(movieSet);
+            return Result.ok();
+        }
+
+    }
+
+    @Override
+    public Result getLastMovieInfo(Long movieHouseID) {
+        LambdaQueryWrapper<MovieSet> movieSetLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        movieSetLambdaQueryWrapper.eq(MovieSet::getMovieHouseId, movieHouseID);
+        movieSetLambdaQueryWrapper.last("limit 1");
+        //按照结束时间倒序排列
+        movieSetLambdaQueryWrapper.orderByDesc(MovieSet::getMovieEndTime);
+        MovieSet one = baseMapper.selectOne(movieSetLambdaQueryWrapper);
+        if (one != null) {
+            return Result.ok().data(one);
+        }
+        return Result.fail(ResultEnum.ERROR_PARAMS);
     }
 }
 

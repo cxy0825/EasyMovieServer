@@ -9,6 +9,7 @@ import com.cxy.service.FilmService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Cccxy
@@ -18,26 +19,27 @@ import javax.annotation.Resource;
 @Service
 public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
         implements FilmService {
-    @Resource
-    FilmMapper filmMapper;
+
     @Resource
     MongoClient mongoClient;
 
     @Override
     public Film getFilmInfo(Long ID) {
-        return filmMapper.getFilmInfo(ID);
+        return baseMapper.getFilmInfo(ID);
 
     }
+
 
     @Override
     public Result getFilmInfoByID(Long ID) {
         //先去查询mongo中有没有
         Result filmInfoByID = mongoClient.getFilmInfoByID(ID);
         if (filmInfoByID.getData() != null) {
+
             return filmInfoByID;
         }
         //再去查数据库
-        Film filmInfo = filmMapper.getFilmInfo(ID);
+        Film filmInfo = baseMapper.getFilmInfo(ID);
         //存到mongo中
         mongoClient.insertFilmInfo(filmInfo);
         //返回结果
@@ -45,7 +47,27 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
 
 
     }
-    
+
+    @Override
+    public Result getFilmInfoByName(String name) {
+        //先去查询mongo中有没有
+        Result filmInfo = mongoClient.getFilmInfoByName(name);
+        if (filmInfo.getData() != null) {
+            System.out.println(filmInfo.toString());
+            return filmInfo;
+        }
+
+        //再去查数据库
+        List<Film> filmInfoByName = baseMapper.getFilmInfoByName(name);
+        filmInfoByName.forEach(item -> {
+            //存到mongo中
+            mongoClient.insertFilmInfo(item);
+        });
+
+        //返回结果
+        return Result.ok().data(filmInfoByName);
+    }
+
 
 }
 

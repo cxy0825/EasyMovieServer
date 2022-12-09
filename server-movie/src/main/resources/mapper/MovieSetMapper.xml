@@ -46,5 +46,12 @@
           and movie_set.film_id = film.ID
           and moviehouse.cinema_ID = cinema.ID
     </select>
+    <select id="checkTime" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM `movie_set`
+        WHERE `movie_set`.movie_house_id = #{movieHouseID}
+          and (#{movieStartTime} BETWEEN `movie_set`.movie_start_time and `movie_set`.movie_end_time
+            or #{movieEndTime} BETWEEN `movie_set`.movie_start_time and `movie_set`.movie_end_time)
+    </select>
 
 </mapper>

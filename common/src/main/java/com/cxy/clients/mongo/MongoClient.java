@@ -4,10 +4,7 @@ import com.cxy.entry.Film;
 import com.cxy.entry.mongoEntry.MongoMoviehouse;
 import com.cxy.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "server-mongo")
 public interface MongoClient {
@@ -33,4 +30,7 @@ public interface MongoClient {
 
     @PostMapping("mongo/public/film/info/delete/{ID}")
     boolean deleteFilmInfoById(@PathVariable("ID") Long ID);
+
+    @GetMapping("mongo/public/film/info")
+    Result getFilmInfoByName(@RequestParam("name") String name);
 }

@@ -72,8 +72,33 @@ public class MovieSetController {
         }
     }
 
+    /**
+     * 更新电影排片信息
+     *
+     * @param movieSet 电影对象
+     * @return {@link Result}
+     */
     @PostMapping("/movieSet/update")
     public Result updateMovieSetInfo(@RequestBody MovieSet movieSet) {
         return movieSetService.updateMovieSetInfo(movieSet);
+    }
+
+    /**
+     * 添加电影排片信息
+     *
+     * @param movieSet 电影
+     * @return {@link Result}
+     */
+    @PostMapping("/movieSet/add")
+    public Result addMovieSetInfo(@RequestBody MovieSet movieSet) {
+        System.out.println(movieSet.toString());
+        return movieSetService.addMovieSetInfo(movieSet);
+    }
+
+    //更加电影放映厅ID获得最后一场的信息
+    @GetMapping("public/movieSet/lastInfo/{movieHouseID}")
+    public Result getLastMovieInfo(@PathVariable Long movieHouseID) {
+
+        return movieSetService.getLastMovieInfo(movieHouseID);
     }
 }

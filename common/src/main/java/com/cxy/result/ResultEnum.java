@@ -13,8 +13,8 @@ public enum ResultEnum {
     MISS_PARAMS(10001, "缺少参数"),
     ERROR_PARAMS(10002, "错误的参数"),
     MISS_USER(10003, "该用户不存在或密码错误"),
-    LOGIN_EXPIRES(10004, "登录过期");
-
+    LOGIN_EXPIRES(10004, "登录过期"),
+    TIME_OVERLAP(10005, "放映厅播放影片时间重叠");
     private int code;
     private String message;
 

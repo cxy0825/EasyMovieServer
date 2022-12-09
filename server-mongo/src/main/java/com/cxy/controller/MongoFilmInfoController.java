@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("mongo/public")
@@ -32,6 +33,19 @@ public class MongoFilmInfoController {
     }
 
     /**
+     * 通过电影名字获取电影信息
+     *
+     * @param name 名字
+     * @return {@link Result}
+     */
+    @GetMapping("/film/info")
+    public Result getFilmInfoByName(@RequestParam String name) {
+        Query query = new Query(Criteria.where("filmName").regex(name));
+        List<MongoFilmInfo> mongoFilmInfos = mongoTemplate.find(query, MongoFilmInfo.class);
+        return Result.ok().data(mongoFilmInfos);
+    }
+
+    /**
      * 插入电影信息
      *
      * @return {@link Result}
@@ -49,7 +63,6 @@ public class MongoFilmInfoController {
      * */
     @PostMapping("/film/info/delete/{ID}")
     public boolean deleteFilmInfoById(@PathVariable("ID") Long ID) {
-
         Query query = new Query();
         query.addCriteria(Criteria.where("id").is(ID));
         DeleteResult remove = mongoTemplate.remove(query, MongoFilmInfo.class);

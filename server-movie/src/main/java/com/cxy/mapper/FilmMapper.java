@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cxy.entry.Film;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author Cccxy
  * @description 针对表【film(电影影片信息)】的数据库操作Mapper
@@ -12,6 +14,8 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface FilmMapper extends BaseMapper<Film> {
     Film getFilmInfo(@Param("ID") Long ID);
+
+    List<Film> getFilmInfoByName(@Param("name") String name);
 }
 
 

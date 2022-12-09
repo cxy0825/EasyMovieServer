@@ -13,5 +13,8 @@ public interface FilmService extends IService<Film> {
 
     Film getFilmInfo(Long ID);
 
+    
     Result getFilmInfoByID(Long ID);
+
+    Result getFilmInfoByName(String name);
 }
