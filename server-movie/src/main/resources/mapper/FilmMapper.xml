@@ -22,7 +22,7 @@
         and film.ID = tag_index.film_ID
         and tag_index.tag_ID = tag.ID
         and cinema.ID =film.cinema_ID
-        <if test="name!=-1">
+        <if test="name!= '-1' ">
             and film.film_name like concat('%', #{name}, '%')
         </if>
         <if test="cinemaID!=0">
