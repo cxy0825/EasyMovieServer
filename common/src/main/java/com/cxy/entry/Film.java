@@ -28,6 +28,11 @@ public class Film implements Serializable {
      */
     private Long cinemaId;
     /**
+     * 电影院名字
+     */
+    @TableField(exist = false)
+    private String cinemaName;
+    /**
      * 影片名字
      */
     private String filmName;

@@ -21,7 +21,14 @@ public class MongoFilmInfo implements Serializable {
      */
     @Id
     private Long id;
-
+    /**
+     * 电影院ID
+     */
+    private Long cinemaId;
+    /**
+     * 电影院名字
+     */
+    private String cinemaName;
     /**
      * 影片名字
      */
