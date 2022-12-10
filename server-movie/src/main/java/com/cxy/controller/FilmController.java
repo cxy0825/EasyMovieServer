@@ -40,8 +40,7 @@ public class FilmController {
             @PathVariable Integer page,
             @PathVariable Integer limit) {
         Page<Film> filmPage = new Page<>(page, limit);
-        filmService.getFilmInfoByName(filmPage, cinemaID, name);
-        return Result.ok().data(filmPage);
+        return filmService.getFilmInfoList(filmPage, cinemaID, name);
 
     }
 

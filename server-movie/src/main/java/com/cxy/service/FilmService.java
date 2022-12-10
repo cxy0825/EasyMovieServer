@@ -20,4 +20,5 @@ public interface FilmService extends IService<Film> {
 
     Page<Film> getFilmInfoByName(Page<Film> page, @Param("cinemaID") Long cinemaID, @Param("name") String name);
 
+    Result getFilmInfoList(Page<Film> filmPage, Long cinemaID, String name);
 }

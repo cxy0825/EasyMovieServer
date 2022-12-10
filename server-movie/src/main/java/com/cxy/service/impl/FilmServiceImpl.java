@@ -52,7 +52,15 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
     public Page<Film> getFilmInfoByName(Page<Film> page, Long cinemaID, String name) {
         return baseMapper.getFilmInfoByName(page, cinemaID, name);
 
-  
+
+    }
+
+    @Override
+    public Result getFilmInfoList(Page<Film> filmPage, Long cinemaID, String name) {
+
+        Page<Film> filmInfoByName = baseMapper.getFilmInfoByName(filmPage, cinemaID, name);
+
+        return Result.ok().data(filmInfoByName);
     }
 
 
