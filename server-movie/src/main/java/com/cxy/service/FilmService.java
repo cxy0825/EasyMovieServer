@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cxy.entry.Film;
 import com.cxy.result.Result;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @author Cccxy
@@ -13,12 +12,9 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface FilmService extends IService<Film> {
 
-    Film getFilmInfo(Long ID);
-
 
     Result getFilmInfoByID(Long ID);
 
-    Page<Film> getFilmInfoByName(Page<Film> page, @Param("cinemaID") Long cinemaID, @Param("name") String name);
-
+  
     Result getFilmInfoList(Page<Film> filmPage, Long cinemaID, String name);
 }

@@ -59,6 +59,7 @@ public class Film implements Serializable {
     //电影宣传视频地址
     @TableField(exist = false)
     private Set<String> videoUrls = new HashSet<>();
+
     //电影宣传海报地址
     @TableField(exist = false)
     private Set<String> posterUrls = new HashSet<>();

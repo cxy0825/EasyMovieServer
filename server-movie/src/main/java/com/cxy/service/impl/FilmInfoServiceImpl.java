@@ -35,7 +35,6 @@ public class FilmInfoServiceImpl extends ServiceImpl<FilmInfoMapper, FilmInfo>
         //上传成功会返回地址
         //更新数据库
         if (StrUtil.isNotBlank(upload)) {
-            System.out.println(upload);
             LambdaUpdateWrapper<FilmInfo> filmInfoLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
             filmInfoLambdaUpdateWrapper.eq(FilmInfo::getFilmId, id);
             filmInfoLambdaUpdateWrapper.setSql("poster_url=" + "'" + upload + "'");
@@ -43,7 +42,7 @@ public class FilmInfoServiceImpl extends ServiceImpl<FilmInfoMapper, FilmInfo>
             if (update) {
                 //删除mongo中的缓存
                 mongoClient.deleteFilmInfoById(id);
-                return Result.ok();
+                return Result.ok().data(upload);
             }
         }
 

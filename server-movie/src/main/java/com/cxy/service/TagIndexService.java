@@ -2,6 +2,7 @@ package com.cxy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cxy.entry.TagIndex;
+import com.cxy.result.Result;
 
 /**
  * @author Cccxy
@@ -10,4 +11,7 @@ import com.cxy.entry.TagIndex;
  */
 public interface TagIndexService extends IService<TagIndex> {
 
+    Result deleteTagWithFilmID(Long filmID, Long tagID);
+
+    Result addTagWithFilmID(Long filmID, Long tagID);
 }

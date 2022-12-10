@@ -22,6 +22,7 @@ public class FilmInfo implements Serializable {
     /**
      * 电影ID
      */
+    @TableField(value = "film_ID")
     private Long filmId;
 
     /**
