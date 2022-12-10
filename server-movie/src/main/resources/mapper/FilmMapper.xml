@@ -13,13 +13,20 @@
     <select id="getFilmInfoByName" resultMap="filmInfoResult">
         select film.*, film_info.poster_url, film_info.video_url, tag.tag_name
         from film,
-             film_info,
-             tag,
-             tag_index
-        where film.film_name like concat('%', #{name}, '%')
-          and film.ID = film_info.film_ID
-          and film.ID = tag_index.film_ID
-          and tag_index.tag_ID = tag.ID
+        film_info,
+        tag,
+        tag_index
+        where
+
+        film.ID = film_info.film_ID
+        and film.ID = tag_index.film_ID
+        and tag_index.tag_ID = tag.ID
+        <if test="name!=-1">
+            and film.film_name like concat('%', #{name}, '%')
+        </if>
+        <if test="cinemaID!=0">
+            and film.cinema_ID = #{cinemaID}
+        </if>
     </select>
 
     <resultMap id="filmInfoResult" type="com.cxy.entry.Film" autoMapping="true">

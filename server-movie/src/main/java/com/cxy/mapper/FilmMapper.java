@@ -1,10 +1,9 @@
 package com.cxy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cxy.entry.Film;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * @author Cccxy
@@ -15,7 +14,7 @@ import java.util.List;
 public interface FilmMapper extends BaseMapper<Film> {
     Film getFilmInfo(@Param("ID") Long ID);
 
-    List<Film> getFilmInfoByName(@Param("name") String name);
+    Page<Film> getFilmInfoByName(Page<Film> page, @Param("cinemaID") Long cinemaID, @Param("name") String name);
 }
 
 

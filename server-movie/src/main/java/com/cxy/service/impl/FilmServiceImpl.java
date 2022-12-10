@@ -1,5 +1,6 @@
 package com.cxy.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.clients.mongo.MongoClient;
 import com.cxy.entry.Film;
@@ -9,7 +10,6 @@ import com.cxy.service.FilmService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author Cccxy
@@ -49,23 +49,10 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
     }
 
     @Override
-    public Result getFilmInfoByName(String name) {
-        //先去查询mongo中有没有
-        Result filmInfo = mongoClient.getFilmInfoByName(name);
-        if (filmInfo.getData() != null) {
-            System.out.println(filmInfo.toString());
-            return filmInfo;
-        }
+    public Page<Film> getFilmInfoByName(Page<Film> page, Long cinemaID, String name) {
+        return baseMapper.getFilmInfoByName(page, cinemaID, name);
 
-        //再去查数据库
-        List<Film> filmInfoByName = baseMapper.getFilmInfoByName(name);
-        filmInfoByName.forEach(item -> {
-            //存到mongo中
-            mongoClient.insertFilmInfo(item);
-        });
-
-        //返回结果
-        return Result.ok().data(filmInfoByName);
+  
     }
 
 

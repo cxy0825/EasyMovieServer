@@ -1,6 +1,5 @@
 package com.cxy.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cxy.clients.mongo.MongoClient;
 import com.cxy.entry.Film;
@@ -10,7 +9,6 @@ import com.cxy.service.FilmService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 
 //影片相关的控制器
@@ -26,19 +24,24 @@ public class FilmController {
     MongoClient mongoClient;
 
 
-    @GetMapping("/public/film/info/list/{cinemaID}/{page}/{limit}")
+    /**
+     * 获取电影信息列表
+     *
+     * @param cinemaID 电影id
+     * @param name     名字
+     * @param page     页面
+     * @param limit    每页条数
+     * @return {@link Result}
+     */
+    @GetMapping("/public/film/info/list/{cinemaID}/{name}/{page}/{limit}")
     public Result getFilmInfoList(
             @PathVariable Long cinemaID,
+            @PathVariable String name,
             @PathVariable Integer page,
             @PathVariable Integer limit) {
         Page<Film> filmPage = new Page<>(page, limit);
-        LambdaQueryWrapper<Film> filmLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        //如果电影院ID是0 就表示查询全部
-        if (cinemaID != 0) {
-            filmLambdaQueryWrapper.eq(Film::getCinemaId, cinemaID);
-        }
-        List<Film> list = filmService.list(filmLambdaQueryWrapper);
-        return Result.ok().data(list);
+        filmService.getFilmInfoByName(filmPage, cinemaID, name);
+        return Result.ok().data(filmPage);
 
     }
 
@@ -50,12 +53,6 @@ public class FilmController {
     @GetMapping("/public/film/info/{ID}")
     public Result getFilmInfoById(@PathVariable Long ID) {
         return filmService.getFilmInfoByID(ID);
-
-    }
-
-    @GetMapping("/public/film/info")
-    public Result getFilmInfoByName(@RequestParam String name) {
-        return filmService.getFilmInfoByName(name);
 
     }
 
