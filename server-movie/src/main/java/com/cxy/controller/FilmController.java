@@ -60,19 +60,10 @@ public class FilmController {
      * 更新电影的基本信息
      * */
     @PostMapping("/film/update")
+
     public Result saveOrUpdate(@RequestBody Film film) {
-        boolean update = filmService.saveOrUpdate(film);
-        //更新就删除mongo中的缓存
-        Long id = film.getId();
-        if (id != null) {
-            //删除mongo里面的内容
-            mongoClient.deleteFilmInfoById(id);
-        }
-        if (update) {
-            return Result.ok();
-        } else {
-            return Result.fail();
-        }
+        return filmService.doSaveOrUpdate(film);
+
 
     }
 

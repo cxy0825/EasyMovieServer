@@ -64,8 +64,9 @@ public class MongoFilmInfoController {
     @PostMapping("/film/info/delete/{ID}")
     public boolean deleteFilmInfoById(@PathVariable("ID") Long ID) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(ID));
+        query.addCriteria(Criteria.where("_id").is(ID));
         DeleteResult remove = mongoTemplate.remove(query, MongoFilmInfo.class);
+        System.out.println("电影ID为" + ID + "--->删除");
         return remove.getDeletedCount() > 0;
     }
 }

@@ -14,6 +14,7 @@ import com.cxy.service.CinemaService;
 import com.cxy.service.FilmInfoService;
 import com.cxy.service.FilmService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
@@ -51,8 +52,6 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
         Cinema cinema = cinemaService.getById(film.getCinemaId());
         film.setCinemaName(cinema.getCinemaName());
 
-        //存到mongo中
-        mongoClient.insertFilmInfo(film);
 
         //查出电影的海报和视频
         LambdaQueryWrapper<FilmInfo> filmInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -70,6 +69,8 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
         //查询标签
         HashSet<String> tags = tagIndexMapper.selectTagsByID(ID);
         film.setTags(tags);
+        //存到mongo中
+        mongoClient.insertFilmInfo(film);
         //返回结果
         return Result.ok().data(film);
 
@@ -86,7 +87,7 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
 
         filmInfoByName.getRecords().forEach(item -> {
             //查出电影院名字
-            Cinema cinema = cinemaService.getById(cinemaID);
+            Cinema cinema = cinemaService.getById(item.getCinemaId());
             item.setCinemaName(cinema.getCinemaName());
             //查出电影的海报和视频
             LambdaQueryWrapper<FilmInfo> filmInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -108,6 +109,32 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
 
         });
         return Result.ok().data(filmInfoByName);
+    }
+
+    @Override
+    @Transactional
+    public Result doSaveOrUpdate(Film film) {
+        //在info表中添加记录
+        //更新就删除mongo中的缓存
+        Long id = film.getId();
+        if (id != null) {
+            //修改数据库
+            baseMapper.updateById(film);
+            //删除mongo里面的内容
+            mongoClient.deleteFilmInfoById(id);
+        } else {
+            //先在film表中插入一条记录
+
+            baseMapper.insert(film);
+            //创建一条记录
+            FilmInfo filmInfo = new FilmInfo();
+            filmInfo.setFilmId(film.getId());
+            filmInfoService.save(filmInfo);
+        }
+
+        return Result.ok();
+
+
     }
 
 

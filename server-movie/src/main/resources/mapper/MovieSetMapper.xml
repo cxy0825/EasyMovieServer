@@ -15,6 +15,7 @@
           and movie_set.movie_house_id = moviehouse.ID
           and movie_set.film_id = film.ID
           and moviehouse.cinema_ID = cinema.ID
+          and movie_set.is_delete = 0
 
     </select>
     <select id="getMovieSetInfo" resultType="com.cxy.Dto.MovieSetDto">
@@ -30,6 +31,8 @@
         where movie_set.movie_house_id = moviehouse.ID
           and movie_set.film_id = film.ID
           and moviehouse.cinema_ID = cinema.ID
+          and movie_set.is_delete = 0
+        order by movie_set.movie_end_time desc
     </select>
     <select id="getMovieSetInfoByFilmName" resultType="com.cxy.Dto.MovieSetDto">
         select movie_set.*,
@@ -45,6 +48,7 @@
           and movie_set.movie_house_id = moviehouse.ID
           and movie_set.film_id = film.ID
           and moviehouse.cinema_ID = cinema.ID
+          and movie_set.is_delete = 0
     </select>
     <select id="checkTime" resultType="java.lang.Integer">
         SELECT count(*)

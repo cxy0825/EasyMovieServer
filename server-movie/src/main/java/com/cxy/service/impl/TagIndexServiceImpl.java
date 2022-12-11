@@ -50,6 +50,7 @@ public class TagIndexServiceImpl extends ServiceImpl<TagIndexMapper, TagIndex>
         int insert = baseMapper.insert(tagIndex);
         //删除mongo缓存
         mongoClient.deleteFilmInfoById(filmID);
+
         return Result.ok().message("插入成功");
     }
 }

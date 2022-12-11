@@ -15,6 +15,8 @@ public interface FilmService extends IService<Film> {
 
     Result getFilmInfoByID(Long ID);
 
-  
+
     Result getFilmInfoList(Page<Film> filmPage, Long cinemaID, String name);
+
+    Result doSaveOrUpdate(Film film);
 }

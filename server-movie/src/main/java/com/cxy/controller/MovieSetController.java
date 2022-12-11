@@ -38,7 +38,6 @@ public class MovieSetController {
     public Result getMovieSetInfo(@PathVariable Integer page, @PathVariable Integer limit) {
         Page<MovieSetDto> movieSetPage = new Page<>(page, limit);
         movieSetService.getMovieSetInfo(movieSetPage);
-
         return Result.ok().data(movieSetPage);
     }
 
