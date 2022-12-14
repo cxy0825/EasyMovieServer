@@ -37,12 +37,6 @@ public class MovieSetServiceImpl extends ServiceImpl<MovieSetMapper, MovieSet>
         return baseMapper.getMovieSetInfoById(ID);
     }
 
-    @Override
-    public Page<MovieSetDto> getMovieSetInfo(Page<MovieSetDto> movieSetPage) {
-
-        return baseMapper.getMovieSetInfo(movieSetPage);
-
-    }
 
     @Override
     public Page<MovieSetDto> getMovieSetInfoByFilmName(Page<MovieSetDto> movieSetPage, String name) {
@@ -127,6 +121,16 @@ public class MovieSetServiceImpl extends ServiceImpl<MovieSetMapper, MovieSet>
             return Result.ok().data(one);
         }
         return Result.fail(ResultEnum.ERROR_PARAMS);
+    }
+
+    @Override
+    public Result MovieSetInfo(Page<MovieSetDto> movieSetPage, Long cinemaId) {
+        //0是最高管理员的cinemaId,数据库sql语句的条件是 cinemaId!=null的时候加入电影院ID约束
+        if (cinemaId != null && cinemaId == 0) {
+            cinemaId = null;
+        }
+        Page<MovieSetDto> movieSetInfo = baseMapper.getMovieSetInfo(movieSetPage, cinemaId);
+        return Result.ok().data(movieSetInfo);
     }
 }
 

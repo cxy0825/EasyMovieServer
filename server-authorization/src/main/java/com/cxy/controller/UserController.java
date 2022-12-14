@@ -1,6 +1,6 @@
 package com.cxy.controller;
 
-import com.cxy.entry.vo.param.LoginParam;
+import com.cxy.entry.vo.param.LoginVo;
 import com.cxy.result.Result;
 import com.cxy.service.AuthorizationService;
 import com.cxy.service.UserService;
@@ -27,18 +27,19 @@ public class UserController {
 
     //普通用户的登录
     @PostMapping("/login")
-    public Result login(@RequestBody LoginParam loginParam) {
-        return userService.login(loginParam);
+    public Result userLogin(@RequestBody LoginVo loginVo) {
+        return userService.userLogin(loginVo);
     }
 
-    //token认证
-    //普通用户的token认证和刷新
-    @PostMapping("/verify")
-    public Result verify(
-            @RequestHeader("token") String token,
-            @RequestHeader("refreshToken") String refreshToken) {
+    //管理员的登录
+    @PostMapping("/admin/login")
+    public Result adminLogin(@RequestBody LoginVo loginVo) {
+        return userService.adminLogin(loginVo);
+    }
 
-        return authorizationService.CheckToken(token, refreshToken);
+    @GetMapping("/getInfo")
+    public Result adminInfo(@RequestHeader("token") String token) {
+        return userService.getAdminInfo(token);
     }
 
 

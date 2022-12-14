@@ -20,18 +20,21 @@
     </select>
     <select id="getMovieSetInfo" resultType="com.cxy.Dto.MovieSetDto">
         select movie_set.*,
-               moviehouse.movie_house_name,
-               film.film_name,
-               film.duration,
-               cinema.cinema_name
+        moviehouse.movie_house_name,
+        film.film_name,
+        film.duration,
+        cinema.cinema_name
         from movie_set,
-             moviehouse,
-             film,
-             cinema
+        moviehouse,
+        film,
+        cinema
         where movie_set.movie_house_id = moviehouse.ID
-          and movie_set.film_id = film.ID
-          and moviehouse.cinema_ID = cinema.ID
-          and movie_set.is_delete = 0
+        and movie_set.film_id = film.ID
+        and moviehouse.cinema_ID = cinema.ID
+        and movie_set.is_delete = 0
+        <if test="cinemaId!=null">
+            and movie_set.cinema_ID=#{cinemaId}
+        </if>
         order by movie_set.movie_end_time desc
     </select>
     <select id="getMovieSetInfoByFilmName" resultType="com.cxy.Dto.MovieSetDto">

@@ -1,46 +1,42 @@
 package com.cxy.interceptor;
 
 
-import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.JWTPayload;
-import cn.hutool.jwt.JWTUtil;
-import com.alibaba.fastjson.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.cxy.Utils.ThreadLocalUtil;
-import com.cxy.result.Result;
-import com.cxy.result.ResultEnum;
+import com.cxy.entry.Token;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 //针对后台管理员级别的token验证拦截器
 public class VerifyAdminInterceptor implements HandlerInterceptor {
     //权限等级 至少是管理员级以上
     final int POWER_LEVEL = 1;
-    //权限类型 必须是admin
-    final String POWER_TYPE = "admin";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String userInfo = request.getHeader("userInfo");
 
-        String token = request.getHeader("token");
-
-        JWT jwt = null;
+        Token token = JSONUtil.toBean(userInfo, Token.class);
+        //等级够不够
         try {
-            jwt = JWTUtil.parseToken(token);
+            if (Long.valueOf(token.getPower()) < 1) {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("utf8");
+                PrintWriter writer = response.getWriter();
+                writer.write("{\"code\": 10004,\"message\": \"权限不足\"}");
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            loginOut(response);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf8");
+            PrintWriter writer = response.getWriter();
+            writer.write("{\"code\": 10004,\"message\": \"权限不足\"}");
         }
 
-        String type = (String) jwt.getPayload("type");
-        Integer power = (Integer) jwt.getPayload("power");
-        //写入到threadlocal中
-        JWTPayload payload = jwt.getPayload();
-        ThreadLocalUtil.set(payload);
+        ThreadLocalUtil.set(token);
         return true;
     }
 
@@ -54,12 +50,5 @@ public class VerifyAdminInterceptor implements HandlerInterceptor {
         ThreadLocalUtil.remove();
     }
 
-    public void loginOut(HttpServletResponse response) throws IOException {
-        Result fail = Result.fail(ResultEnum.LOGIN_EXPIRES);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("utf-8");
-        PrintWriter writer = response.getWriter();
-        writer.write(JSONObject.toJSONString(fail));
-        writer.close();
-    }
+
 }

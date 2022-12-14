@@ -3,6 +3,7 @@ package com.cxy.entry;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -45,7 +46,8 @@ public class Administrator implements Serializable {
     private Integer power;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private LocalDateTime createTime;
+    @Transient
+    private transient LocalDateTime createTime;
     ;
 
     /**
@@ -53,7 +55,8 @@ public class Administrator implements Serializable {
      */
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private LocalDateTime updateTime;
+    @Transient
+    private transient LocalDateTime updateTime;
 
     /**
      *
@@ -61,8 +64,10 @@ public class Administrator implements Serializable {
 
     @TableLogic
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Integer isDelete;
+    @Transient
+    private transient Integer isDelete;
 
     @TableField(exist = false)
+    @Transient
     private static final long serialVersionUID = 1L;
 }

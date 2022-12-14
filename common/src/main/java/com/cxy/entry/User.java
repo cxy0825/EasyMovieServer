@@ -44,7 +44,7 @@ public class User implements Serializable {
     /**
      * 手机号
      */
-    private String phone;
+    private String account;
 
     /**
      * 用户状态 1表示正常用户,0表示封号
@@ -55,14 +55,14 @@ public class User implements Serializable {
      * 创建时间
      */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private LocalDateTime createTime;
+    private transient LocalDateTime createTime;
     ;
 
     /**
      * 更新时间
      */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private LocalDateTime updateTime;
+    private transient LocalDateTime updateTime;
 
     /**
      * 是否删除
@@ -70,7 +70,7 @@ public class User implements Serializable {
 
     @TableLogic
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Integer isDelete;
+    private transient Integer isDelete;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

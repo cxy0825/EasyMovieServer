@@ -28,22 +28,29 @@ public class MovieSetController {
     }
 
     /**
-     * 获得电影片场信息
+     * 按照电影院ID 获得电影片场信息
      *
-     * @param page  页面
-     * @param limit 限制
+     * @param page     页面
+     * @param limit    限制
+     * @param cinemaId 电影院ID
      * @return {@link Result}
      */
     @GetMapping("public/movieSet/info/{page}/{limit}")
-    public Result getMovieSetInfo(@PathVariable Integer page, @PathVariable Integer limit) {
+    public Result getMovieSetInfo(
+            @PathVariable Integer page,
+            @PathVariable Integer limit,
+            @RequestParam(required = false) Long cinemaId
+    ) {
+
         Page<MovieSetDto> movieSetPage = new Page<>(page, limit);
-        movieSetService.getMovieSetInfo(movieSetPage);
-        return Result.ok().data(movieSetPage);
+
+        return movieSetService.MovieSetInfo(movieSetPage, cinemaId);
     }
 
     /**
      * 通过电影名称获得电影片场信息
      *
+     * @param name  电影名字
      * @param page  页面
      * @param limit 限制
      * @return {@link Result}

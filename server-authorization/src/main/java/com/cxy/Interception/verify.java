@@ -15,8 +15,8 @@ public class verify implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String token = request.getHeader("token");
-        Boolean verify = authorizationService.verify(token);
-        System.out.println(verify);
+//        Boolean verify = authorizationService.verify(token);
+//        System.out.println(verify);
         return true;
     }
 

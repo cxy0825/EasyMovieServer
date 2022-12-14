@@ -1,8 +1,6 @@
 package com.cxy.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.entry.Administrator;
@@ -49,29 +47,23 @@ public class AdministratorServiceImpl extends ServiceImpl<AdministratorMapper, A
         if (administrator == null) {
             return Result.fail(ResultEnum.MISS_USER);
         }
+
         AdministratorLoginVo administratorLoginVo = new AdministratorLoginVo();
         //登录成功后去授权服务生成token
-        administratorLoginVo.setToken(authorizationService.createToken(administrator));
+//        administratorLoginVo.setToken(authorizationService.createToken(user));
 
         BeanUtil.copyProperties(administrator, administratorLoginVo);
 
         return Result.ok().data(administratorLoginVo);
     }
 
-    //获得管理员的账号信息
     @Override
     public Result getInfo(String token) {
-        Boolean verify = authorizationService.verify(token);
-        //通过校验就去数据库中查询这个用户
-        if (verify) {
-            JWT jwt = JWTUtil.parseToken(token);
-            Administrator administrator = baseMapper.selectById(Long.parseLong(String.valueOf(jwt.getPayload("ID"))));
-            AdministratorLoginVo administratorLoginVo = new AdministratorLoginVo();
-            BeanUtil.copyProperties(administrator, administratorLoginVo);
-            return Result.ok().data(administratorLoginVo);
-        }
-        return Result.fail(ResultEnum.LOGIN_EXPIRES);
+        return null;
     }
+
+    //获得管理员的账号信息
+
 }
 
 

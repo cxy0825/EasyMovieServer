@@ -6,7 +6,7 @@ import com.cxy.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(value = "server-mongo")
+@FeignClient(value = "server-mongo", contextId = "mongoServer")
 public interface MongoClient {
     //传递复杂参数的时候一定要用post,然后去requestBody里面获取
     //用requestParams会转换异常,因为这个是获取凭借在url?后面的,get请求有长度限制所以会被截断

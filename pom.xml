@@ -12,6 +12,7 @@
         <module>server-authorization</module>
         <module>server-movie</module>
         <module>server-mongo</module>
+        <module>server-order</module>
 
     </modules>
     <name>EasyMovieServer</name>

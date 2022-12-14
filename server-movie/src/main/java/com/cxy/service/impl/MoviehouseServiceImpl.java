@@ -1,7 +1,6 @@
 package com.cxy.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.jwt.JWTPayload;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,6 +8,7 @@ import com.cxy.Utils.ThreadLocalUtil;
 import com.cxy.clients.mongo.MongoClient;
 import com.cxy.entry.Cinema;
 import com.cxy.entry.Moviehouse;
+import com.cxy.entry.Token;
 import com.cxy.entry.mongoEntry.MongoMoviehouse;
 import com.cxy.mapper.MoviehouseMapper;
 import com.cxy.result.Result;
@@ -43,12 +43,13 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
     public Result getMovieHouseWithCinema(Integer page, Integer limit, String name) {
         //根据身份进行判断 如果管理员type是"admin"就按照里面的ID进行查询
         //如果是 "root"就默认查询全部
-        JWTPayload jwtPayload = (JWTPayload) ThreadLocalUtil.get();
+        Token token = (Token) ThreadLocalUtil.get();
         LambdaQueryWrapper<Moviehouse> queryWrapper = new LambdaQueryWrapper<>();
-        System.out.println(jwtPayload.getClaim("type"));
+        System.out.println(token);
+
 //        如果不是超级管理员就根据ID进行查询
-        if (!jwtPayload.getClaim("type").equals("root")) {
-            queryWrapper.eq(Moviehouse::getCinemaId, jwtPayload.getClaim("cinemaID"));
+        if (!token.getType().equals("root")) {
+            queryWrapper.eq(Moviehouse::getCinemaId, token.getCinemaId());
         }
         //跟上查询条件
         queryWrapper.like(!StringUtils.isEmpty(name), Moviehouse::getMovieHouseName, name);
@@ -80,11 +81,12 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
     public Result getMovieHouseWithCinemaById(Long id) {
         //根据身份进行判断 如果管理员type是"admin"就按照里面的ID进行查询
         //如果是 "root"就默认查询全部
-        JWTPayload jwtPayload = (JWTPayload) ThreadLocalUtil.get();
+        Token token = (Token) ThreadLocalUtil.get();
+
         LambdaQueryWrapper<Moviehouse> queryWrapper = new LambdaQueryWrapper<>();
 //        如果不是超级管理员就根据ID进行查询
-        if (!jwtPayload.getClaim("type").equals("root")) {
-            queryWrapper.eq(Moviehouse::getCinemaId, jwtPayload.getClaim("cinemaID"));
+        if (!token.getType().equals("root")) {
+            queryWrapper.eq(Moviehouse::getCinemaId, token.getCinemaId());
         }
         queryWrapper.eq(Moviehouse::getId, id);
         Moviehouse moviehouse = baseMapper.selectOne(queryWrapper);
@@ -111,13 +113,9 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
         //判断当前传进来的movie中的cinemaID是否和token中的
         Boolean root = isRoot();
         boolean update = false;
-        if (root) {
-            update = this.saveOrUpdate(moviehouse);
-        }
         //否则吧cinemaID设置成token中一样
-        JWTPayload jwtPayload = (JWTPayload) ThreadLocalUtil.get();
-        Long cinemaID = Long.valueOf(String.valueOf(jwtPayload.getClaim("cinemaID")));
-        moviehouse.setCinemaId(cinemaID);
+        Token token = (Token) ThreadLocalUtil.get();
+        moviehouse.setCinemaId(token.getCinemaId());
         update = this.saveOrUpdate(moviehouse);
         //只有成功后才返回
         if (update) {
@@ -192,9 +190,8 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
 
     //判断当前用户是否为超级管理员
     public Boolean isRoot() {
-        JWTPayload jwtPayload = (JWTPayload) ThreadLocalUtil.get();
-
-        String type = (String) jwtPayload.getClaim("type");
+        Token token = (Token) ThreadLocalUtil.get();
+        String type = token.getType();
         if (type.equals("root")) {
             return true;
         }

@@ -2,7 +2,7 @@ package com.cxy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cxy.entry.User;
-import com.cxy.entry.vo.param.LoginParam;
+import com.cxy.entry.vo.param.LoginVo;
 import com.cxy.result.Result;
 
 /**
@@ -12,5 +12,9 @@ import com.cxy.result.Result;
  */
 public interface UserService extends IService<User> {
 
-    Result login(LoginParam loginParam);
+    Result userLogin(LoginVo loginVo);
+
+    Result adminLogin(LoginVo loginVo);
+
+    Result getAdminInfo(String token);
 }

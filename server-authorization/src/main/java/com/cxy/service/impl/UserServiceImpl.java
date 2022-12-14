@@ -1,14 +1,19 @@
 package com.cxy.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.jwt.JWT;
+import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cxy.clients.mongo.RedisClient;
+import com.cxy.entry.Administrator;
+import com.cxy.entry.Token;
 import com.cxy.entry.User;
-import com.cxy.entry.vo.param.LoginParam;
-import com.cxy.entry.vo.result.LoginVo;
+import com.cxy.entry.vo.param.LoginVo;
 import com.cxy.mapper.UserMapper;
 import com.cxy.result.Result;
 import com.cxy.result.ResultEnum;
+import com.cxy.service.AdministratorService;
 import com.cxy.service.AuthorizationService;
 import com.cxy.service.UserService;
 import org.apache.commons.lang.StringUtils;
@@ -27,14 +32,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     AuthorizationService authorizationService;
+    @Resource
+    AdministratorService administratorService;
+    @Resource
+    RedisClient redisClient;
 
     @Override
-    public Result login(LoginParam loginParam) {
-        String phone = loginParam.getPhone();//账号
-        String password = loginParam.getPassword();//密码
-        String type = loginParam.getType();//登录方式
+    public Result userLogin(LoginVo loginVo) {
+        String account = loginVo.getAccount();//账号
+        String password = loginVo.getPassword();//密码
+        String type = loginVo.getType();//登录方式
 //        判断是否为空
-        if (StringUtils.isEmpty(phone)) {
+        if (StringUtils.isEmpty(account)) {
             return Result.fail(ResultEnum.MISS_PARAMS);
         }
         if (StringUtils.isEmpty(password)) {
@@ -44,15 +53,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return Result.fail(ResultEnum.MISS_PARAMS);
         }
 
-        //如果 type==ez是官网账号登录 
+        //如果 type==ez是官网账号登录
         // 如果 type==ali 是支付宝登录
         User user = null;
         if (type.equals("em")) {
             LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            userLambdaQueryWrapper.eq(User::getPhone, phone);
+            userLambdaQueryWrapper.eq(User::getAccount, account);
             userLambdaQueryWrapper.eq(User::getPassword, password);
-
             user = baseMapper.selectOne(userLambdaQueryWrapper);
+
             if (user == null) {
                 return Result.fail(ResultEnum.MISS_USER);
             }
@@ -62,13 +71,53 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
 
-        LoginVo loginVo = new LoginVo();
-        //登录成功后去授权服务生成token
-        loginVo.setTokenMap(authorizationService.createToken(user));
-        BeanUtil.copyProperties(user, loginVo);
+        return Result.ok();
 
+    }
 
-        return Result.ok().data(loginVo);
+    @Override
+    public Result adminLogin(LoginVo loginVo) {
+        String account = loginVo.getAccount();//账号
+        String password = loginVo.getPassword();//密码
+        //判断是否为空
+        if (StringUtils.isEmpty(account)) {
+            return Result.fail(ResultEnum.MISS_PARAMS);
+        }
+        if (StringUtils.isEmpty(password)) {
+            return Result.fail(ResultEnum.MISS_PARAMS);
+        }
+
+        LambdaQueryWrapper<Administrator> administratorLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        administratorLambdaQueryWrapper.eq(Administrator::getAccount, account);
+        administratorLambdaQueryWrapper.eq(Administrator::getPassword, password);
+        Administrator administrator = administratorService.getOne(administratorLambdaQueryWrapper);
+        if (administrator == null) {
+            return Result.fail(ResultEnum.MISS_USER);
+        }
+
+        //去授权中心生成token
+        Token token = BeanUtil.copyProperties(administrator, Token.class);
+        //管理员的type和name是一样的这里是为了存储方便所以设置type
+        token.setType(administrator.getName());
+
+        String data = authorizationService.createToken(token);
+        return Result.ok().data(data);
+    }
+
+    @Override
+    public Result getAdminInfo(String token) {
+        //从token中分离签名出来
+        String sign = token.substring(token.lastIndexOf(".") + 1);
+        try {
+            JWT jwt = JWTUtil.parseToken(token);
+            String account = (String) jwt.getPayload("account");
+            Token userInfo = redisClient.getUserInfo(account, sign);
+            return Result.ok().data(userInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail();
+        }
+
 
     }
 

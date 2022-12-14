@@ -3,6 +3,7 @@ server:
 spring:
   application:
     name: server-GateWay
+
   cloud:
     nacos:
 
@@ -26,9 +27,15 @@ spring:
           uri: lb://server-movie
           predicates:
             - Path=/movie/**
-                  
+
         #mongo服务
         - id: server-mongo-route
           uri: lb://server-mongo
           predicates:
             - Path=/mongo/**
+        #订单服务
+        - id: server-order-route
+          uri: lb://server-order
+          predicates:
+            - Path=/order/**
+

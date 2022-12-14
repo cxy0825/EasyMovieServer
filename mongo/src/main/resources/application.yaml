@@ -1,0 +1,20 @@
+server:
+  port: 1112
+spring:
+  application:
+    name: mongo
+  cloud:
+    nacos:
+
+      discovery:
+        server-addr: 43.142.147.67:8848
+        username: nacos
+        password: nacos
+  #        ephemeral: false
+  data:
+    mongodb:
+      #      uri: mongodb://192.168.188.137:27017/easyMovie?authSource=admin
+      uri: mongodb://192.168.188.137:27017/qimo
+#logging:
+#  level:
+#    org.springframework.data.mongodb.core.MongoTemplate: DEBUG

@@ -15,7 +15,6 @@ public interface MovieSetService extends IService<MovieSet> {
 
     MovieSetDto getMovieSetInfoById(Long ID);
 
-    Page<MovieSetDto> getMovieSetInfo(Page<MovieSetDto> movieSetPage);
 
     Page<MovieSetDto> getMovieSetInfoByFilmName(Page<MovieSetDto> movieSetPage, String name);
 
@@ -25,4 +24,6 @@ public interface MovieSetService extends IService<MovieSet> {
     Result addMovieSetInfo(MovieSet movieSet);
 
     Result getLastMovieInfo(Long movieHouseID);
+
+    Result MovieSetInfo(Page<MovieSetDto> movieSetPage, Long cinemaId);
 }

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public interface MovieSetMapper extends BaseMapper<MovieSet> {
     MovieSetDto getMovieSetInfoById(Long ID);
 
-    Page<MovieSetDto> getMovieSetInfo(Page<MovieSetDto> page);
+    Page<MovieSetDto> getMovieSetInfo(Page<MovieSetDto> page, @Param("cinemaId") Long cinemaId);
 
     Page<MovieSetDto> getMovieSetInfoByFilmName(Page<MovieSetDto> page, @Param("name") String name);
 

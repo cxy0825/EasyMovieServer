@@ -1,8 +1,10 @@
 package com.cxy.filterFactory;
 
-import cn.hutool.jwt.JWT;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.cxy.clients.mongo.RedisClient;
+import com.cxy.entry.Token;
 import com.cxy.result.Result;
 import com.cxy.result.ResultEnum;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -11,64 +13,71 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Resource;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 @Component
 public class AuthorizationGlobalFilter implements GlobalFilter {
+    @Resource
+    RedisClient redisClient;
     //权限等级 至少是管理员级以上
     final int POWER_LEVEL = 1;
     //权限类型 必须是admin
     final String POWER_TYPE = "admin";
+    final AntPathMatcher antPathMatcher = new AntPathMatcher();
+    //不需要进行校验的路径接口
+    final String[] urls = {
+            "/**/public/**",
+            "/**/login/**"
+    };
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         URI uri = exchange.getRequest().getURI();
-        //判断是不是公开接口
-        if (!uri.getPath().contains("/public")) {
 
+        boolean match = false;
+        //判断是否是公开请求
+        for (String url : urls) {
+            match = antPathMatcher.match(url, uri.getPath());
+            if (match) {
+                break;
+            }
+        }
+        //如果不是公开请求就进行权限判断
+        if (!match) {
+            //先去redis中拿用户详情
             //不是公开接口就验证jwt
             String token = exchange.getRequest().getHeaders().getFirst("token");
-            //判空验证
-            if (StringUtils.isEmpty(token)) {
-                return this.loginOut(exchange);
-            }
-            //鉴定权限
-            JWT jwt = null;
+            String account = null;
+            String sign = null;
             try {
-                jwt = JWTUtil.parseToken(token);
+                //账号
+                account = (String) JWTUtil.parseToken(token).getPayload("account");
+                //签名
+                sign = token.substring(token.lastIndexOf(".") + 1);
             } catch (Exception e) {
-                e.printStackTrace();
+                loginOut(exchange);
+                System.out.println("token解析异常");
+            }
+
+            if (token == null) {
                 return loginOut(exchange);
             }
-            if (jwt == null) {
+            Token user = redisClient.getUserInfo(account, sign);
+            if (user == null) {
                 return loginOut(exchange);
             }
-
-            String type = (String) jwt.getPayload("type");
-            Integer power = (Integer) jwt.getPayload("power");
-
-            //超级管理员就直接过
-            if ("root".equals(type)) {
-
-                return chain.filter(exchange);
-            }
-            //如果是普通管理员就放过
-            else if (POWER_TYPE.equals(type) && power >= POWER_LEVEL) {
-                return chain.filter(exchange);
-            }
-
-
-            //不是普通管理员并且权限等级等于1的拦截
-            return loginOut(exchange);
+            //添加到请求头
+            exchange.getRequest().mutate().header("userInfo", JSONUtil.toJsonStr(user)).build();
+           
 
         }
-
         return chain.filter(exchange);
 
     }
@@ -76,7 +85,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter {
 
     public Mono<Void> loginOut(ServerWebExchange exchange) {
 
-        Result fail = Result.fail(ResultEnum.LOGIN_EXPIRES);
+        Result fail = Result.fail(ResultEnum.LOGIN_EXPIRES).message("拦截成功,登陆过期");
         byte[] bytes = JSONObject.toJSONString(fail).getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
         exchange.getResponse().setStatusCode(HttpStatus.OK);
