@@ -16,6 +16,9 @@ public interface MongoClient {
     @GetMapping("/mongo/movieHouse/info/{movieHouseID}")
     Result getMovieHouseById(@PathVariable("movieHouseID") Long movieHouseID);
 
+    @PostMapping("/mongo/movieHouse/del/{movieHouseID}")
+    public Result delMovieHouseById(@PathVariable("movieHouseID") Long movieHouseID);
+
     @PostMapping("/mongo/movieHouse/insert/{movieHouseID}")
     Result insertSeatByID(@PathVariable("movieHouseID") Long movieHouseID, @RequestBody int[] arr);
 
@@ -33,4 +36,6 @@ public interface MongoClient {
 
     @GetMapping("mongo/public/film/info")
     Result getFilmInfoByName(@RequestParam("name") String name);
+
+
 }

@@ -13,4 +13,6 @@ public interface MongoMoviehouseServer {
     Result insertSeatByID(Long movieHouseID, int[] arr);
 
     Result updateSeatByID(Long movieHouseID, Integer[] arr);
+
+    Result delMovieHouseById(Long movieHouseID);
 }

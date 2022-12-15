@@ -32,6 +32,7 @@
         and movie_set.film_id = film.ID
         and moviehouse.cinema_ID = cinema.ID
         and movie_set.is_delete = 0
+        and moviehouse.state=1
         <if test="cinemaId!=null">
             and movie_set.cinema_ID=#{cinemaId}
         </if>

@@ -49,11 +49,22 @@ public class MongoMovieHouseController {
         return mongoMoviehouseServer.insertSeatByID(movieHouseID, arr);
     }
 
+    /*
+     * 更新电影放映厅中的座位信息
+     * */
     @PostMapping("/movieHouse/update/{movieHouseID}")
     public Result updateSeatByID(@PathVariable("movieHouseID") Long movieHouseID, @RequestBody Integer[] arr) {
 
         return mongoMoviehouseServer.updateSeatByID(movieHouseID, arr);
     }
 
+    /*
+     *
+     * 在mongo中删除电影放映厅的信息
+     * */
+    @PostMapping("/movieHouse/del/{movieHouseID}")
+    public Result delMovieHouseById(@PathVariable Long movieHouseID) {
+        return mongoMoviehouseServer.delMovieHouseById(movieHouseID);
+    }
 
 }

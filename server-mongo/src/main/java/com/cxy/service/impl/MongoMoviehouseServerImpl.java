@@ -3,6 +3,7 @@ package com.cxy.service.impl;
 import com.cxy.entry.mongoEntry.MongoMoviehouse;
 import com.cxy.result.Result;
 import com.cxy.service.MongoMoviehouseServer;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -72,6 +73,18 @@ public class MongoMoviehouseServerImpl implements MongoMoviehouseServer {
         }
 
         return Result.ok();
+    }
+
+    @Override
+    public Result delMovieHouseById(Long movieHouseID) {
+
+        Query query = new Query(Criteria.where("_id").is(movieHouseID));
+        DeleteResult remove = mongoTemplate.remove(query, MongoMoviehouse.class);
+        if (remove.getDeletedCount() >= 1) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
     }
 
 

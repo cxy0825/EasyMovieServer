@@ -119,6 +119,8 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
         update = this.saveOrUpdate(moviehouse);
         //只有成功后才返回
         if (update) {
+            //删除mongo中的缓存
+            mongoClient.delMovieHouseById(moviehouse.getId());
             return Result.ok();
         }
         return Result.fail().message("更新或者插入失败");
@@ -146,9 +148,7 @@ public class MoviehouseServiceImpl extends ServiceImpl<MoviehouseMapper, Movieho
             return Result.ok().data(data);
         }
         //没查到就去查看数据库
-
         //查询数据库
-
         Moviehouse moviehouse = baseMapper.selectById(movieHouseID);
         MongoMoviehouse mongoMoviehouse = null;
         //如果数据库中查询出为空 也添加到mongo中,防止缓存穿透
