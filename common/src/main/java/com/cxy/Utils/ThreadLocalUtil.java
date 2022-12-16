@@ -1,5 +1,8 @@
 package com.cxy.Utils;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ThreadLocalUtil {
     private final static ThreadLocal<Object> threadLocal = new ThreadLocal<>();
 
