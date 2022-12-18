@@ -20,7 +20,12 @@ spring:
         max-idle: 10
         min-idle: 1
         time-between-eviction-runs: 10s
-      
+  rabbitmq:
+    host: 192.168.188.137
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: em
   data:
     mongodb:
       #      uri: mongodb://192.168.188.137:27017/easyMovie?authSource=admin

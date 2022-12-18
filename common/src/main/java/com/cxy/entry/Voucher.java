@@ -47,7 +47,10 @@ public class Voucher implements Serializable {
      * 抵扣多少金额
      */
     private Long actualValue;
-
+    /*
+     * 优惠券价格
+     * */
+    private Long price;
     /**
      * 0表示下架 1表示上架
      */
@@ -62,7 +65,7 @@ public class Voucher implements Serializable {
      * 优惠券开始使用时间
      */
     private LocalDateTime startTime;
-    
+
     /**
      * 优惠券截止使用时间
      */

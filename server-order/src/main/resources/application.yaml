@@ -18,6 +18,12 @@ spring:
         username: nacos
         password: nacos
         # ephemeral: false
+  rabbitmq:
+    host: 192.168.188.137
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: em
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

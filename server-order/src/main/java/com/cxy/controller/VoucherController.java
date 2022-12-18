@@ -43,25 +43,22 @@ public class VoucherController {
 
     }
 
-    /**
-     * 修改优惠券的状态(是否上架优惠券)
+    /*
+     * 删除优惠券
      *
-     * @param voucher 凭证
-     * @return {@link Result}
-     */
-    @PostMapping("/updateState")
-    public Result updateState(@RequestBody Voucher voucher) {
-        boolean update = voucherService.updateById(voucher);
-        if (update) {
-            return Result.ok();
-        } else {
-            return Result.fail();
-        }
-    }
-
-
+     * */
     @DeleteMapping("/deleteVoucher/{ID}")
     public Result deleteVoucher(@PathVariable Long ID) {
         return voucherService.del(ID);
+    }
+
+    /**
+     * 购买优惠券
+     *
+     * @return {@link Result}
+     */
+    @PostMapping("/buy")
+    public Result buyVoucher(@RequestBody Voucher voucher) {
+        return voucherService.buyVoucher(voucher);
     }
 }
