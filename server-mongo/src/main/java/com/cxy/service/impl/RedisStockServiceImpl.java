@@ -38,14 +38,15 @@ public class RedisStockServiceImpl implements RedisStockService {
     }
 
     @Override
-    public boolean limitBought(String stockKey, String boughtKey, Long userId) {
+    public boolean limitBought(String stockKey, String boughtKey, Long userId, String number) {
         //放在一个线程里面使用watch保证并发的时候不会出问题
         boolean result = (Boolean) redisTemplate.execute(new SessionCallback() {
             @Override
             public Object execute(RedisOperations redisOperations) throws DataAccessException {
                 redisOperations.watch(stockKey);
+                Integer n = Integer.valueOf(number);
                 //判断库存是否大于0
-                Integer stockNum = (Integer) redisTemplate.opsForValue().get(stockKey);
+                Boolean stock = (Integer) redisTemplate.opsForValue().get(stockKey) >= n;
                 //判断是否购买过
                 Boolean member = redisTemplate.opsForSet().isMember(boughtKey, userId);
                 //如果购买过
@@ -54,54 +55,52 @@ public class RedisStockServiceImpl implements RedisStockService {
                 }
 
 //
-                if (stockNum != null && stockNum > 0) {
+                if (stock != null && stock) {
                     //开启事务
                     redisOperations.multi();
                     //把用户ID加入到队列
                     redisTemplate.opsForSet().add(boughtKey, userId);
                     //扣减库存
-                    redisTemplate.opsForValue().decrement(stockKey);
+                    redisTemplate.opsForValue().decrement(stockKey, n);
                     //执行事务
                     redisOperations.exec();
-
-
                     return true;
-
                 }
                 return false;
 
             }
 
         });
+
         return result;
     }
 
     @Override
-    public boolean bought(String stockKey, Long userId) {
+    public boolean bought(String stockKey, Long userId, String number) {
 
         //放在一个线程里面使用watch保证并发的时候不会出问题
         boolean result = (Boolean) redisTemplate.execute(new SessionCallback() {
             @Override
             public Object execute(RedisOperations redisOperations) throws DataAccessException {
-                //开启事务
-                redisOperations.multi();
+                redisOperations.watch(stockKey);
+                Integer n = Integer.valueOf(number);
                 //判断库存是否大于0
-                Integer stockNum = (Integer) redisTemplate.opsForValue().get(stockKey);
-                if (stockNum != null && stockNum > 0) {
+                Boolean stock = (Integer) redisTemplate.opsForValue().get(stockKey) >= n;
+                if (stock != null && stock) {
+                    //开启事务
+                    redisOperations.multi();
                     //扣减库存
-                    Long decrement = redisTemplate.opsForValue().decrement(stockKey);
+                    redisTemplate.opsForValue().decrement(stockKey, n);
                     //执行事务
                     redisOperations.exec();
-                    if (decrement != null) {
-
-                        return true;
-                    }
+                    return true;
                 }
                 return false;
 
             }
 
         });
+
         return result;
     }
 

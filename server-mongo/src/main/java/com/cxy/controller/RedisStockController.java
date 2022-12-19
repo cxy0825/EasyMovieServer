@@ -57,13 +57,14 @@ public class RedisStockController {
      * @param userId    购买者的ID
      * @return {@link List}<{@link Long}>
      */
-    @PostMapping("limitBought/{stockKey}/{boughtKey}/{userId}")
+    @PostMapping("limitBought/{stockKey}/{boughtKey}/{userId}/{number}")
     public boolean limitBought(
             @PathVariable("stockKey") String stockKey,
             @PathVariable("boughtKey") String boughtKey,
-            @PathVariable("userId") Long userId
+            @PathVariable("userId") Long userId,
+            @PathVariable("number") String number
     ) {
-        return redisStockService.limitBought(stockKey, boughtKey, userId);
+        return redisStockService.limitBought(stockKey, boughtKey, userId, number);
     }
 
     /**
@@ -72,11 +73,12 @@ public class RedisStockController {
      * @param stockKey redis中商品的库存key
      * @return {@link List}<{@link Long}>
      */
-    @PostMapping("bought/{stockKey}/{userId}")
+    @PostMapping("bought/{stockKey}/{userId}/{number}")
     public boolean bought(
             @PathVariable("stockKey") String stockKey,
-            @PathVariable("userId") Long userId
+            @PathVariable("userId") Long userId,
+            @PathVariable("number") String number
     ) {
-        return redisStockService.bought(stockKey, userId);
+        return redisStockService.bought(stockKey, userId, number);
     }
 }

@@ -9,8 +9,8 @@ public interface RedisStockService {
 
     List<Long> getAlreadyBought(String key);
 
-    boolean limitBought(String stockKey, String boughtKey, Long userId);
+    boolean limitBought(String stockKey, String boughtKey, Long userId, String number);
 
-    boolean bought(String stockKey, Long userId);
+    boolean bought(String stockKey, Long userId, String number);
 
 }

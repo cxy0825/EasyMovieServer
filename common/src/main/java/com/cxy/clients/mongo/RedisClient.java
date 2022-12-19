@@ -24,13 +24,18 @@ public interface RedisClient {
     @GetMapping("/stock/alreadyBought/{key}")
     public List<Long> getAlreadyBought(@PathVariable("key") String key);
 
-    @PostMapping("/stock/limitBought/{stockKey}/{boughtKey}/{userId}")
+    @PostMapping("/stock/limitBought/{stockKey}/{boughtKey}/{userId}/{number}")
     public boolean limitBought(
             @PathVariable("stockKey") String stockKey,
             @PathVariable("boughtKey") String boughtKey,
-            @PathVariable("userId") Long userId
+            @PathVariable("userId") Long userId,
+            @PathVariable("number") String number
     );
 
-    @PostMapping("/stock/bought/{stockKey}")
-    public boolean bought(@PathVariable("stockKey") String stockKey);
+    @PostMapping("/stock/bought/{stockKey}/{userId}/{number}")
+    public boolean bought(
+            @PathVariable("stockKey") String stockKey,
+            @PathVariable("userId") Long userId,
+            @PathVariable("number") String number
+    );
 }

@@ -34,13 +34,13 @@ public class AuthorizationGlobalFilter implements GlobalFilter {
     //不需要进行校验的路径接口
     final String[] urls = {
             "/**/public/**",
-            "/**/login/**"
+            "/**/login/**",
     };
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         URI uri = exchange.getRequest().getURI();
-
+//        System.out.println(uri);
         boolean match = false;
         //判断是否是公开请求
         for (String url : urls) {
@@ -75,7 +75,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter {
             }
             //添加到请求头
             exchange.getRequest().mutate().header("userInfo", JSONUtil.toJsonStr(user)).build();
-           
+
 
         }
         return chain.filter(exchange);

@@ -18,5 +18,5 @@ public interface VoucherService extends IService<Voucher> {
 
     Result del(Long id);
 
-    Result buyVoucher(Voucher voucher);
+   
 }

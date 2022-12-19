@@ -52,13 +52,5 @@ public class VoucherController {
         return voucherService.del(ID);
     }
 
-    /**
-     * 购买优惠券
-     *
-     * @return {@link Result}
-     */
-    @PostMapping("/buy")
-    public Result buyVoucher(@RequestBody Voucher voucher) {
-        return voucherService.buyVoucher(voucher);
-    }
+
 }

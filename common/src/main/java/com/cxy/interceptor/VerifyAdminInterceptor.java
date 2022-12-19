@@ -21,6 +21,12 @@ public class VerifyAdminInterceptor implements HandlerInterceptor {
         String userInfo = request.getHeader("userInfo");
 
         Token token = JSONUtil.toBean(userInfo, Token.class);
+        //如果是普通用户
+        if (!token.getType().equals("root") || !token.getType().equals("admin")) {
+            ThreadLocalUtil.set(token);
+            return true;
+        }
+        //如果是管理员用户
         //等级够不够
         try {
             if (Long.valueOf(token.getPower()) < 1) {
@@ -28,16 +34,17 @@ public class VerifyAdminInterceptor implements HandlerInterceptor {
                 response.setCharacterEncoding("utf8");
                 PrintWriter writer = response.getWriter();
                 writer.write("{\"code\": 10004,\"message\": \"权限不足\"}");
+                return false;
             }
+            ThreadLocalUtil.set(token);
+            return true;
         } catch (Exception e) {
             response.setContentType("application/json");
             response.setCharacterEncoding("utf8");
             PrintWriter writer = response.getWriter();
             writer.write("{\"code\": 10004,\"message\": \"权限不足\"}");
+            return false;
         }
-
-        ThreadLocalUtil.set(token);
-        return true;
     }
 
     @Override

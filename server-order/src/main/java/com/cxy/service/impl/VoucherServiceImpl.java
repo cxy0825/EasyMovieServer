@@ -1,7 +1,5 @@
 package com.cxy.service.impl;
 
-import cn.hutool.json.JSONConfig;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,12 +7,10 @@ import com.cxy.Utils.ThreadLocalUtil;
 import com.cxy.clients.mongo.RedisClient;
 import com.cxy.entry.Token;
 import com.cxy.entry.Voucher;
-import com.cxy.entry.VoucherOrder;
 import com.cxy.mapper.VoucherMapper;
 import com.cxy.result.Result;
 import com.cxy.result.ResultEnum;
 import com.cxy.result.redisKey;
-import com.cxy.service.VoucherOrderService;
 import com.cxy.service.VoucherService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -34,8 +30,7 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher>
     RedisClient redisClient;
     @Resource
     RabbitTemplate rabbitTemplate;
-    @Resource
-    VoucherOrderService voucherOrderService;
+
 
     @Override
     public Page<Voucher> getVoucherList(Page<Voucher> voucherPage, Voucher voucher) {
@@ -108,39 +103,12 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher>
 
     }
 
-    @Override
-    public Result buyVoucher(Voucher voucher) {
-        String stockKey = redisKey.VOUCHER_STOCK.getKey() + voucher.getId().toString();
-        String boughtKey = redisKey.VOUCHER_ALREADY_BOUGHT.getKey() + voucher.getId().toString();
-        //根据优惠券id获得优惠券的信息
-        Voucher voucherInfo = baseMapper.selectById(voucher.getId());
-        //获取用户ID
-        Token token = (Token) ThreadLocalUtil.get();
-        Boolean flag = redisClient.limitBought(stockKey, boughtKey, token.getId());
-        //redis扣减库存和存入用户成功
-        if (!flag) {
-            return Result.fail().message("购买失败,因为你已经购买过了");
-        }
-        //异步创建订单
-        VoucherOrder voucherOrder = new VoucherOrder();
-        //用户ID
-        voucherOrder.setUserId(token.getId());
-        //优惠券的ID
-        voucherOrder.setVoucherId(voucher.getId());
-        //需要支付多少金额
-        voucherOrder.setTotalAmount(voucherInfo.getPrice());
-        sendOrder(voucherOrder);
-        return Result.ok();
-
-    }
-
-
     //消息队列通知订单服务生成订单
-    public void sendOrder(VoucherOrder voucherOrder) {
-        String jsonString = JSONUtil.toJsonStr(voucherOrder, new JSONConfig().setIgnoreNullValue(true));
-
-        rabbitTemplate.convertAndSend("order", "order.voucher", jsonString);
-    }
+//    public void sendOrder(VoucherOrder voucherOrder) {
+//        String jsonString = JSONUtil.toJsonStr(voucherOrder, new JSONConfig().setIgnoreNullValue(true));
+//
+//        rabbitTemplate.convertAndSend("order", "order.voucher", jsonString);
+//    }
 }
 
 

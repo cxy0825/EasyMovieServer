@@ -24,6 +24,14 @@ spring:
     username: admin
     password: admin
     virtual-host: em
+    listener:
+      simple:
+        prefetch: 10 #每个队列一次最多处理10条
+      direct:
+        retry:
+          enabled: true
+          max-attempts: 5         # 最大重试次数，默认为3
+          initial-interval: 3000  # 重试间隔时间，默认1000(单位毫秒)
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -35,4 +43,5 @@ alipay:
   appId: 2016103000779258
   appPrivateKey: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCkz0/xiygDqCrpO/PQuShIVHVMxVamkeMcyqd2vaYbBEXFA9qwXo3FWDfYG3z2pbDayFFV247H3NnJanXvXUFXJke9eq2iDhQ3CjkHAOyi7pi9KPLOBk2kNe0y37TWM38fV2ikyvYPlSgFO5ID9uhrVucjB+8DKC42Y+kYnBw6cRNDoNsgk9Avz0CMkvDBLJKwWjpAhGXUdcKalKRqfyFYvYxriu5O7jShvwroZCNV03LZ7kk+Ri/a/pcQZyUiV29N9s0kwkS2oLTn7PnwFKs+4jEAyG4pEvbWGMBXP5/DseASlnQHyFxCnNx1vvVHiyN23NtwYR63NjNzoMt0OVVTAgMBAAECggEBAIzZZAARJkRhzzJ++zMxWnzeOVU//XrjiQ5NH2t6TuAd+aaTUa2TUWQLrcYyT8zW89s2gVR4DIFAfJwHMP09XJ8nZv5HPucVUy9qvCwBHTtt3/khasiqWGZzc+EbkIfTgNv/Lr5PepT8qzQ1oedjd2Rs46JroFe5Wi0/m7FdkT5bi6WlVc7GgWsasluUU1y3frR9jrHn/aSYJ2Dfj0ssRvlbmVrx5lsSIs13AcUX3GNp7Dct3j5MHFmgbHeuSV0hZIwxWUDX+Dq1vZ1PgP/YzFfdVh7ZpuqAy7Rv9zBcchh6iUiWzLT60+zVbOT9WdGuak9E4Ke4d/Nwh+eCQSvlYFECgYEA7z8eFcyt/P64gc/TxMKjj80fCq6CnNSLwjpHLOqL0MPEfU6e+sQSNkV+JHZtsk0y33JGK/fATv/XRYnWQIoOu2s6/U1he2bG7MXMINQi01IYmYdT2Mp060wl1uJi1NaT7zODeMy6YgX6k0y2xivORUwP93e39eVx/ZSsFIACGnsCgYEAsFnLpNWLR1SOkXod285KzDHcEZ78D2US1zsNPkMhU8h34Pp9TqLwqbCpUQ00EhEvzgTeshZefDJmaEYFD76wJemlHvRfoAWQODOxZRXGcsuZ4y68F9IxeMuwz/D+u4l8lTEbzACxi3aLA1dN9zaTaDjMrjxK8yaWUbAftURGBQkCgYEAxX3RxOb/3O8bubSoOCz/vY3yiOvDT9i4Qa2/4Vj/72YbBeFnpNNDwV8eINVN+jh1vTPkrxjFu7C/sFx26zHLtXRv7nb4+Fe/7+XbemIDGXQUcG/gi/2cBDwIpFiegtlapsNcTNSbKp2K2hsiaXXxwQxnxb0isy4jKdOXNRjyI48CgYBO9/bkGifjSi8JX/is7CS8aXtVfK78qdMVBEF65w6ueO+NlD22j+pa4lv/in0NthqFE9MxRikLTnpjKS+tDEPOxmCFiwKjIrqhICzIykZyM0/21n+t3xb+M6A6jX1UN03NdQ8wfAMFI5E+bsLf99VsbzrgrukVFutrKwYX4rnEGQKBgQCq0LnrHY5PPnN99uFuMjbminuOHVrokFNiNUYx9FquJwVJL75KDdfPDkBLNTCARzlSeiHqWSTnmOfIPTak8mYT+OVY0WZAvnTn1ukJOs0mTVatTbU6jP0rvntv/4iyFxXaEgUzg7acEnkmbVgmTCd5Qelj4H+qVxUvgG4s8+T6ew==
   alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqdiTVOLCcXG4rrF5RkuA71vaSICvvREIWasFOWZEdLWiFeCWBCFpD2Ut4uYgc+VdLRWXszWucdw31IXae3x+vbCRfPKWPEGf3GYnFrcy+axz6gB7fqOByXRO/rPpQxvqSPBpI6iH4jhjAdA/90G0xd1OXiPa6REmiG5GDc39QGZ9RM2ROAcLa6m7F6iyuz33PlnwDX2Ffp0DRkKzWf0TLTGnoKRDJiw++z6CFhoUQ1XiqZeUEBIKt8uDiqFfc35TdIVHfApsGRmYfIvkDsrhVbuduIzY9Gm7ZBxWhb2qgOVyzDP4bLs4jgdeNultc351d20aLsjUcYZHUfaVi/hwmQIDAQAB
-  notifyUrl: 3651xu3032.qicp.vip:59841/order/payNotify
+  notifyUrl: http://3651y30z32.zicp.fun:8940/order/aliPay/payNotify
+
