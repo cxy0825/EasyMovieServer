@@ -26,10 +26,14 @@ public class VoucherController {
     ) {
         Page<Voucher> voucherPage = new Page<>(page, limit);
         voucherService.getVoucherList(voucherPage, voucher);
-
         return Result.ok().data(voucherPage);
     }
 
+    @GetMapping("/voucherList/{cinemaID}")
+    public Result voucherList(@PathVariable("cinemaID") Long cinemaID) {
+
+        return voucherService.getVoucherList(cinemaID);
+    }
 
     /**
      * 添加或者修改优惠券

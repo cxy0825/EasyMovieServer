@@ -1,5 +1,6 @@
 package com.cxy.config;
 
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -40,6 +41,8 @@ public class LocalDateTimeSerializerConfig {
         return builder -> {
             builder.serializerByType(LocalDateTime.class, localDateTimeSerializer());
             builder.deserializerByType(LocalDateTime.class, localDateTimeDeserializer());
+            builder.serializerByType(Long.TYPE, ToStringSerializer.instance);
+            builder.serializerByType(Long.class, ToStringSerializer.instance);
             builder.simpleDateFormat(pattern);
         };
     }

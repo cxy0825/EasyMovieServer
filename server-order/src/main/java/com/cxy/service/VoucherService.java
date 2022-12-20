@@ -14,9 +14,11 @@ public interface VoucherService extends IService<Voucher> {
 
     Page<Voucher> getVoucherList(Page<Voucher> voucherPage, Voucher voucher);
 
+    Result getVoucherList(Long cinemaID);
+
     Result updateVoucher(Voucher voucher);
 
     Result del(Long id);
 
-   
+
 }

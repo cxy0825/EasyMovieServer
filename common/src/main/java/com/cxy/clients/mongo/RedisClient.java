@@ -21,6 +21,9 @@ public interface RedisClient {
     @PostMapping("/stock/setStock/{key}/{stockNum}")
     public boolean setStock(@PathVariable("key") String key, @PathVariable("stockNum") Long stockNum);
 
+    @GetMapping("/stock/delStock/{key}")
+    public boolean delStock(@PathVariable("key") String key);
+
     @GetMapping("/stock/alreadyBought/{key}")
     public List<Long> getAlreadyBought(@PathVariable("key") String key);
 

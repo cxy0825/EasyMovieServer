@@ -1,5 +1,6 @@
 package com.cxy.controller;
 
+import cn.hutool.core.util.BooleanUtil;
 import com.cxy.service.RedisStockService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,18 @@ public class RedisStockController {
     @PostMapping("setStock/{key}/{stockNum}")
     public boolean setStock(@PathVariable("key") String key, @PathVariable("stockNum") Integer stockNum) {
         return redisStockService.setStock(key, stockNum);
+    }
+
+    /**
+     * 删除库存
+     *
+     * @param key redis键
+     * @return boolean
+     */
+    @GetMapping("delStock/{key}")
+    public boolean delStock(@PathVariable String key) {
+        Boolean delete = redisTemplate.delete(key);
+        return BooleanUtil.isTrue(delete);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.cxy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.Utils.ThreadLocalUtil;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.beans.Transient;
+import java.util.List;
 
 /**
  * @author Cccxy
@@ -51,6 +53,15 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher>
         voucherLambdaQueryWrapper.eq(voucher.getId() != null, Voucher::getId, voucher.getId());
         baseMapper.selectPage(voucherPage, voucherLambdaQueryWrapper);
         return voucherPage;
+    }
+
+    @Override
+    public Result getVoucherList(Long cinemaID) {
+        LambdaUpdateWrapper<Voucher> voucherLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        voucherLambdaUpdateWrapper.eq(Voucher::getState, 1);
+        voucherLambdaUpdateWrapper.eq(Voucher::getCinemaId, cinemaID);
+        List<Voucher> vouchers = baseMapper.selectList(voucherLambdaUpdateWrapper);
+        return Result.ok().data(vouchers);
     }
 
     @Override
@@ -95,7 +106,10 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher>
         //删除优惠券的ID
         voucherLambdaQueryWrapper.eq(Voucher::getId, id);
         boolean del = baseMapper.delete(voucherLambdaQueryWrapper) > 0;
+        //删除redis中的缓存库存
         if (del) {
+            redisClient.delStock(redisKey.VOUCHER_STOCK.getKey() + id);
+            redisClient.delStock(redisKey.VOUCHER_ALREADY_BOUGHT.getKey() + id);
             return Result.ok();
         } else {
             return Result.fail();
@@ -103,12 +117,7 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher>
 
     }
 
-    //消息队列通知订单服务生成订单
-//    public void sendOrder(VoucherOrder voucherOrder) {
-//        String jsonString = JSONUtil.toJsonStr(voucherOrder, new JSONConfig().setIgnoreNullValue(true));
-//
-//        rabbitTemplate.convertAndSend("order", "order.voucher", jsonString);
-//    }
+
 }
 
 
