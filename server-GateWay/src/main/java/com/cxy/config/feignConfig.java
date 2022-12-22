@@ -1,4 +1,4 @@
-package com.cxy;
+package com.cxy.config;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
