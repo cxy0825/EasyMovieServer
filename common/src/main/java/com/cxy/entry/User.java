@@ -24,7 +24,7 @@ public class User implements Serializable {
     /**
      * 用户名称最长16个字
      */
-    private String nickName;
+    private String name;
 
     /**
      * 用户密码最长22个字
@@ -32,7 +32,7 @@ public class User implements Serializable {
     private String password;
 
     /**
-     * 用户权限等级 1表示普通用户 2表示Vip用户 100表示管理员
+     * 用户权限等级 0-->普通用户 1-->vip用户
      */
     private Integer power;
 

@@ -5,6 +5,7 @@ import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cxy.Utils.DingDingUtil;
 import com.cxy.clients.mongo.RedisClient;
 import com.cxy.entry.Administrator;
 import com.cxy.entry.Token;
@@ -20,6 +21,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Random;
 
 /**
  * @author Cccxy
@@ -40,38 +44,52 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Result userLogin(LoginVo loginVo) {
         String account = loginVo.getAccount();//账号
-        String password = loginVo.getPassword();//密码
+        String code = loginVo.getPassword();//验证码
         String type = loginVo.getType();//登录方式
 //        判断是否为空
         if (StringUtils.isEmpty(account)) {
             return Result.fail(ResultEnum.MISS_PARAMS);
         }
-        if (StringUtils.isEmpty(password)) {
+        if (StringUtils.isEmpty(code)) {
             return Result.fail(ResultEnum.MISS_PARAMS);
         }
         if (StringUtils.isEmpty(type)) {
             return Result.fail(ResultEnum.MISS_PARAMS);
         }
-
+        //比对验证码
+        //从redis中获取该账号的验证码
+        String redisCode = redisClient.getCode(account);
+        //比对
+        if (!redisCode.equals(code)) {
+            return Result.fail(ResultEnum.CODE_ERROR);
+        }
         //如果 type==ez是官网账号登录
         // 如果 type==ali 是支付宝登录
         User user = null;
         if (type.equals("em")) {
             LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
             userLambdaQueryWrapper.eq(User::getAccount, account);
-            userLambdaQueryWrapper.eq(User::getPassword, password);
             user = baseMapper.selectOne(userLambdaQueryWrapper);
 
             if (user == null) {
-                return Result.fail(ResultEnum.MISS_USER);
+                //用户不存在就创建一个用户加入到数据库
+                user = new User();
+                user.setAccount(account);
+                user.setName("EM用户" + LocalDateTime.now().toEpochSecond(ZoneOffset.of("+8")));
+                user.setAvatarUrl("https://img2.woyaogexing.com/2022/11/27/3a1a204db0059162d081d35287508941.jpg");
+                user.setPower(0);
+                baseMapper.insert(user);
             }
-//            System.out.println(user);
+            //去授权中心生成token
+            Token token = BeanUtil.copyProperties(user, Token.class);
+
+            token.setType("user");
+            String data = authorizationService.createToken(token);
+            return Result.ok().data(data);
         } else {
             return Result.fail(ResultEnum.ERROR_PARAMS);
         }
 
-
-        return Result.ok();
 
     }
 
@@ -119,6 +137,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
 
+    }
+
+    @Override
+    public Result code(String phone) {
+        String code = "";
+        Random random = new Random();
+        //生产随机的4位数验证码
+        for (int i = 0; i < 4; i++) {
+            code = code + String.valueOf(random.nextInt(9));
+        }
+        //保存到redis中
+        boolean flag = redisClient.setCode(phone, code);
+
+
+        if (!flag) {
+            return Result.fail();
+        }
+        //通过短信发送到手机
+        boolean b = new DingDingUtil().sendMsg(code);
+        return Result.ok().message("发送成功");
     }
 
 }

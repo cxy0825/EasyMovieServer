@@ -41,4 +41,10 @@ public interface RedisClient {
             @PathVariable("userId") Long userId,
             @PathVariable("number") String number
     );
+
+    @GetMapping("/setCode")
+    public boolean setCode(@RequestParam("phone") String phone, @RequestParam("code") String code);
+
+    @GetMapping("/getCode")
+    public String getCode(@RequestParam("phone") String phone);
 }

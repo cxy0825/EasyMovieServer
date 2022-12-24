@@ -17,7 +17,9 @@ public enum ResultEnum {
     TIME_OVERLAP(10005, "放映厅播放影片时间重叠"),
     PROJECT_ERROR(10006, "商品不存在"),
     PAYMENT_ERROR(10007, "支付回调失败"),
-    PAYMENT_SIGN_FAIL(10008, "支付回调验证签名失败");
+    PAYMENT_SIGN_FAIL(10008, "支付回调验证签名失败"),
+    CODE_ERROR(10009, "验证码错误");
+
     private int code;
     private String message;
 

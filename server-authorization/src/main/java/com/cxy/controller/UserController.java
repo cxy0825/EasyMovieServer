@@ -31,6 +31,15 @@ public class UserController {
         return userService.userLogin(loginVo);
     }
 
+    /*
+     *
+     * 发送验证码到手机
+     * */
+    @GetMapping("public/code")
+    public Result getCode(@RequestParam("phone") String phone) {
+        return userService.code(phone);
+    }
+
     //管理员的登录
     @PostMapping("/admin/login")
     public Result adminLogin(@RequestBody LoginVo loginVo) {

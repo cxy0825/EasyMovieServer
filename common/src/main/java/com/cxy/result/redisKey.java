@@ -10,10 +10,15 @@ import lombok.ToString;
 public enum redisKey {
     //用户登录TOKEN
     USER_TOKEN_KEY("user:token:"),
+    //用户登录验证码
+    USER_CODE("user:code:"),
+
     //优惠券的库存数量
     VOUCHER_STOCK("voucher:stock:"),
     //已经购买过此优惠券的用户
     VOUCHER_ALREADY_BOUGHT("voucher:already:bought:");
+
+
     private String key;
 
 }
