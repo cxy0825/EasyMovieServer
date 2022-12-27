@@ -18,6 +18,6 @@ public class MyInterceptionConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(VerifyAdminInterceptor())
                 .addPathPatterns("/movie/**")
-                .excludePathPatterns("/movie/public/**");
+                .excludePathPatterns("/movie/**/public/**");
     }
 }

@@ -56,7 +56,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (StringUtils.isEmpty(type)) {
             return Result.fail(ResultEnum.MISS_PARAMS);
         }
+
         //比对验证码
+        //没有传入验证码直接失败
+        if (code.isEmpty()) {
+            return Result.fail(ResultEnum.CODE_ERROR);
+        }
         //从redis中获取该账号的验证码
         String redisCode = redisClient.getCode(account);
         //比对
