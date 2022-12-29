@@ -1,6 +1,7 @@
 package com.cxy.entry;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -45,6 +46,7 @@ public class Film implements Serializable {
     /**
      * 电影上映时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private LocalDateTime releaseTime;
 
     /**

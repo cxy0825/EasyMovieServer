@@ -23,4 +23,11 @@
         where performer_index.film_ID = #{filmID}
           and performer.ID = performer_index.performer_ID
     </select>
+    <select id="getPerformByID" resultType="com.cxy.entry.Film">
+        select film.*
+        from performer_index,
+             film
+        where performer_index.performer_ID = #{performID}
+          and performer_index.film_ID = film.ID
+    </select>
 </mapper>

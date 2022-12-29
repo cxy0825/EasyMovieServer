@@ -13,4 +13,7 @@ public interface PerformerService extends IService<Performer> {
 
     Result getInfo(Long ID);
 
+    Result getInfoByID(Long ID);
+
+    Result getPerformByID(Long ID);
 }

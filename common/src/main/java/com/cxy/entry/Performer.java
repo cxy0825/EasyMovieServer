@@ -1,6 +1,7 @@
 package com.cxy.entry;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -34,6 +35,7 @@ public class Performer implements Serializable {
     /**
      * 演员出生日期
      */
+    @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
     private LocalDateTime birthday;
 
     /**
