@@ -92,6 +92,7 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film>
             //查出电影的海报和视频
             LambdaQueryWrapper<FilmInfo> filmInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
             filmInfoLambdaQueryWrapper.eq(FilmInfo::getFilmId, item.getId());
+            filmInfoLambdaQueryWrapper.orderByDesc(FilmInfo::getUpdateTime);
             FilmInfo filmInfo = filmInfoService.getOne(filmInfoLambdaQueryWrapper);
             if (filmInfo != null) {
 

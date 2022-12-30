@@ -1,5 +1,6 @@
 package com.cxy.entry.mongoEntry;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,7 @@ public class MongoFilmInfo implements Serializable {
     /**
      * 电影上映时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private LocalDateTime releaseTime;
 
     /**

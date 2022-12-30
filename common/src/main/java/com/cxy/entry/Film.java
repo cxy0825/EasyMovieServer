@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,8 +48,10 @@ public class Film implements Serializable {
     /**
      * 电影上映时间
      */
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private LocalDateTime releaseTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate releaseTime;
 
     /**
      * 电影时长
