@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -30,12 +29,12 @@ public class Cinema implements Serializable {
     /**
      * 经度
      */
-    private BigDecimal x;
+    private double x;
 
     /**
      * 纬度
      */
-    private BigDecimal y;
+    private double y;
 
     /**
      *

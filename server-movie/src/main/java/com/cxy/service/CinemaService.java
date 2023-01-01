@@ -10,4 +10,5 @@ import com.cxy.entry.Cinema;
  */
 public interface CinemaService extends IService<Cinema> {
 
+    boolean add(Cinema cinema);
 }

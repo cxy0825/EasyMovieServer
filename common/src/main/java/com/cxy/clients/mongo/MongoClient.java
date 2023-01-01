@@ -1,6 +1,7 @@
 package com.cxy.clients.mongo;
 
 import com.cxy.entry.Film;
+import com.cxy.entry.mongoEntry.MongoCinema;
 import com.cxy.entry.mongoEntry.MongoMoviehouse;
 import com.cxy.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -37,5 +38,7 @@ public interface MongoClient {
     @GetMapping("mongo/public/film/info")
     Result getFilmInfoByName(@RequestParam("name") String name);
 
+    @PostMapping("/mongo/cinema/add")
+    public boolean add(@RequestBody MongoCinema mongoCinema);
 
 }
