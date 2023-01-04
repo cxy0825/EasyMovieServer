@@ -3,10 +3,7 @@ package com.cxy.controller;
 import com.cxy.entry.Cinema;
 import com.cxy.result.Result;
 import com.cxy.service.CinemaService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -26,5 +23,11 @@ public class CinemaController {
             return Result.fail();
         }
 
+    }
+
+    @GetMapping("public/info/{ID}")
+    public Result getInfo(@PathVariable("ID") Long ID) {
+        Cinema cinema = cinemaService.getInfo(ID);
+        return Result.ok().data(cinema);
     }
 }

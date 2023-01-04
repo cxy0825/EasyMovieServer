@@ -8,6 +8,7 @@ import com.cxy.service.MovieSetService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/movie")
@@ -50,16 +51,31 @@ public class MovieSetController {
     /**
      * 通过电影名称获得电影片场信息
      *
-     * @param name  电影名字
-     * @param page  页面
-     * @param limit 限制
+     * @param name     电影名字
+     * @param page     页面
+     * @param limit    限制
+     * @param cinemaID 电影院ID 可以为空
      * @return {@link Result}
      */
     @GetMapping("public/movieSet/info/{name}/{page}/{limit}")
-    public Result getMovieSetInfoByFilmName(@PathVariable String name, @PathVariable Integer page, @PathVariable Integer limit) {
+    public Result getMovieSetInfoByFilmName(
+            @PathVariable String name,
+            @PathVariable Integer page,
+            @PathVariable Integer limit,
+            @RequestParam(value = "cinemaID", required = false) Long cinemaID
+    ) {
         Page<MovieSetDto> movieSetPage = new Page<>(page, limit);
-        movieSetService.getMovieSetInfoByFilmName(movieSetPage, name);
+        movieSetService.getMovieSetInfoByFilmName(movieSetPage, name, cinemaID);
         return Result.ok().data(movieSetPage);
+    }
+
+    /*
+     * 根据电影院ID和电影ID查询今天的排片信息
+     * */
+    @GetMapping("public/movieSet/todayinfo/{cinemaID}/{filmID}")
+    public Result getTodayInfo(@PathVariable("cinemaID") Long cinemaID, @PathVariable("filmID") Long filmID) {
+        List<MovieSet> list = movieSetService.getTodayInfo(cinemaID, filmID);
+        return Result.ok().data(list);
     }
 
     /**

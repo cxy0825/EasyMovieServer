@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.Dto.MovieSetDto;
+import com.cxy.clients.mongo.MongoClient;
 import com.cxy.entry.Film;
 import com.cxy.entry.MovieSet;
 import com.cxy.mapper.MovieSetMapper;
@@ -17,6 +18,8 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * @author Cccxy
@@ -28,6 +31,8 @@ public class MovieSetServiceImpl extends ServiceImpl<MovieSetMapper, MovieSet>
         implements MovieSetService {
     @Resource
     FilmService filmService;
+    @Resource
+    MongoClient mongoClient;
 
     @Override
     public MovieSetDto getMovieSetInfoById(Long ID) {
@@ -39,9 +44,9 @@ public class MovieSetServiceImpl extends ServiceImpl<MovieSetMapper, MovieSet>
 
 
     @Override
-    public Page<MovieSetDto> getMovieSetInfoByFilmName(Page<MovieSetDto> movieSetPage, String name) {
-
-        return baseMapper.getMovieSetInfoByFilmName(movieSetPage, name);
+    public Page<MovieSetDto> getMovieSetInfoByFilmName(Page<MovieSetDto> movieSetPage, String name, Long cinemaID) {
+//        System.out.println(cinemaID);
+        return baseMapper.getMovieSetInfoByFilmName(movieSetPage, name, cinemaID);
     }
 
     @Override
@@ -131,6 +136,29 @@ public class MovieSetServiceImpl extends ServiceImpl<MovieSetMapper, MovieSet>
         }
         Page<MovieSetDto> movieSetInfo = baseMapper.getMovieSetInfo(movieSetPage, cinemaId);
         return Result.ok().data(movieSetInfo);
+    }
+
+    @Override
+    public List<MovieSet> getTodayInfo(Long cinemaID, Long filmID) {
+        //先去mongo中查找没有就去数据库
+        List<MovieSet> todayInfo = mongoClient.getTodayInfo(cinemaID, filmID);
+        if (todayInfo.size() != 0) {
+
+            return todayInfo;
+        }
+        //去数据库查找
+        LambdaQueryWrapper<MovieSet> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(MovieSet::getCinemaId, cinemaID);
+        queryWrapper.eq(MovieSet::getFilmId, filmID);
+        queryWrapper.gt(MovieSet::getMovieStartTime, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        queryWrapper.lt(MovieSet::getMovieStartTime, LocalDateTime.now().withHour(23).withMinute(59).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        List<MovieSet> movieSets = baseMapper.selectList(queryWrapper);
+        //添加到mongo
+        movieSets.stream().forEach(item -> {
+            mongoClient.addMovieSet(item);
+        });
+
+        return movieSets;
     }
 }
 

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -52,4 +53,8 @@ public class MovieSetDto implements Serializable {
      * 电影院名字
      */
     private String cinemaName;
+    /*
+     * 票价
+     * */
+    private BigDecimal price;
 }

@@ -1,10 +1,16 @@
 package com.cxy.entry;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -13,12 +19,16 @@ import java.time.LocalDateTime;
  * @TableName movie_set
  */
 @TableName(value = "movie_set")
+@Document("em_movieSet")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MovieSet implements Serializable {
     /**
      *
      */
     @TableId(type = IdType.AUTO)
+    @Id
     private Long id;
 
     /**
@@ -39,12 +49,19 @@ public class MovieSet implements Serializable {
     /**
      * 电影开始时间
      */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime movieStartTime;
 
     /**
      * 电影结束时间
      */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime movieEndTime;
+
+    /**
+     * 票价
+     */
+    private BigDecimal price;
 
     /**
      *

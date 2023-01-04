@@ -40,19 +40,22 @@
     </select>
     <select id="getMovieSetInfoByFilmName" resultType="com.cxy.Dto.MovieSetDto">
         select movie_set.*,
-               moviehouse.movie_house_name,
-               film.film_name,
-               film.duration,
-               cinema.cinema_name
+        moviehouse.movie_house_name,
+        film.film_name,
+        film.duration,
+        cinema.cinema_name
         from movie_set,
-             moviehouse,
-             film,
-             cinema
+        moviehouse,
+        film,
+        cinema
         where film.film_name like concat('%', #{name}, '%')
-          and movie_set.movie_house_id = moviehouse.ID
-          and movie_set.film_id = film.ID
-          and moviehouse.cinema_ID = cinema.ID
-          and movie_set.is_delete = 0
+        and movie_set.movie_house_id = moviehouse.ID
+        and movie_set.film_id = film.ID
+        and moviehouse.cinema_ID = cinema.ID
+        and movie_set.is_delete = 0
+        <if test="cinemaID!=null">
+            and movie_set.cinema_ID=#{cinemaID}
+        </if>
     </select>
     <select id="checkTime" resultType="java.lang.Integer">
         SELECT count(*)
@@ -60,6 +63,7 @@
         WHERE `movie_set`.movie_house_id = #{movieHouseID}
           and (#{movieStartTime} BETWEEN `movie_set`.movie_start_time and `movie_set`.movie_end_time
             or #{movieEndTime} BETWEEN `movie_set`.movie_start_time and `movie_set`.movie_end_time)
+
     </select>
 
 </mapper>

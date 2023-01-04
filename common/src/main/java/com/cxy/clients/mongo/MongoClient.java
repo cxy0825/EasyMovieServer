@@ -1,11 +1,14 @@
 package com.cxy.clients.mongo;
 
 import com.cxy.entry.Film;
+import com.cxy.entry.MovieSet;
 import com.cxy.entry.mongoEntry.MongoCinema;
 import com.cxy.entry.mongoEntry.MongoMoviehouse;
 import com.cxy.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FeignClient(value = "server-mongo", contextId = "mongoServer")
 public interface MongoClient {
@@ -41,4 +44,15 @@ public interface MongoClient {
     @PostMapping("/mongo/cinema/add")
     public boolean add(@RequestBody MongoCinema mongoCinema);
 
+    @GetMapping("/mongo/cinema/info/{ID}")
+    public Result getCinemaInfo(@PathVariable("ID") Long ID);
+
+    @PostMapping("/mongo/movieSet/add")
+    public boolean addMovieSet(@RequestBody MovieSet movieSet);
+
+    //获取某个电影院今天的排片情况
+    @GetMapping("/mongo/movieSet/todayInfo/{cinemaID}/{filmID}")
+    public List<MovieSet> getTodayInfo(
+            @PathVariable("cinemaID") Long cinemaID,
+            @PathVariable("filmID") Long filmID);
 }

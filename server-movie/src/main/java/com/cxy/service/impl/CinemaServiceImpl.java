@@ -1,11 +1,13 @@
 package com.cxy.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.clients.mongo.MongoClient;
 import com.cxy.entry.Cinema;
 import com.cxy.entry.mongoEntry.MongoCinema;
 import com.cxy.mapper.CinemaMapper;
+import com.cxy.result.Result;
 import com.cxy.service.CinemaService;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +50,21 @@ public class CinemaServiceImpl extends ServiceImpl<CinemaMapper, Cinema>
 
 
         return false;
+    }
+
+    @Override
+    public Cinema getInfo(Long id) {
+        //先去mongo中查询改电影院信息
+        Result cinemaInfo = mongoClient.getCinemaInfo(id);
+        if (cinemaInfo.getData() != null) {
+
+            String s = JSONUtil.toJsonStr(cinemaInfo.getData());
+            Cinema cinema = JSONUtil.toBean(s, Cinema.class);
+            return cinema;
+        }
+        //否则去数据库查找
+        Cinema cinema = baseMapper.selectById(id);
+        return cinema;
     }
 }
 

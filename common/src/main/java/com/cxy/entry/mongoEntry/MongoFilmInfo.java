@@ -43,7 +43,8 @@ public class MongoFilmInfo implements Serializable {
     /**
      * 电影上映时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8", shape = JsonFormat.Shape.STRING)
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime releaseTime;
 
     /**

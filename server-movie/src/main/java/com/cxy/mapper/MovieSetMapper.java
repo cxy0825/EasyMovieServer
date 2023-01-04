@@ -19,7 +19,7 @@ public interface MovieSetMapper extends BaseMapper<MovieSet> {
 
     Page<MovieSetDto> getMovieSetInfo(Page<MovieSetDto> page, @Param("cinemaId") Long cinemaId);
 
-    Page<MovieSetDto> getMovieSetInfoByFilmName(Page<MovieSetDto> page, @Param("name") String name);
+    Page<MovieSetDto> getMovieSetInfoByFilmName(Page<MovieSetDto> page, @Param("name") String name, @Param("cinemaID") Long cinemaID);
 
     //检查时间有没有重叠
     //传入修改后的电影开始时间和结束时间
@@ -28,6 +28,7 @@ public interface MovieSetMapper extends BaseMapper<MovieSet> {
             @Param("movieStartTime") LocalDateTime movieStartTime,
             @Param("movieEndTime") LocalDateTime movieEndTime,
             @Param("movieHouseID") Long movieHouseID);
+
 }
 
 
