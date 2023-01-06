@@ -15,4 +15,6 @@ public interface PaymentService extends IService<Payment> {
 
     //支付订单
     void paymentCallback(Message message);
+
+    Payment getInfoByID(Long paymentID);
 }

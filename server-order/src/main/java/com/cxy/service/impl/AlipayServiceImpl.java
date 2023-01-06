@@ -28,6 +28,7 @@ public class AlipayServiceImpl implements AlipayService {
     VoucherService voucherService;
     @Resource
     RedisClient redisClient;
+    private static Long TTL_TIME = 30L * 1000;
 
     @Override
     public Result alipay(OrderParam orderParam) throws Exception {
@@ -83,10 +84,13 @@ public class AlipayServiceImpl implements AlipayService {
 
         //redis中购买成功后创建消息队列送到订单生成列表
         Boolean flag = redisClient.limitBought(stockKey, boughtKey, token.getId(), "1");
+
         //redis扣减库存和存入用户成功
         if (!flag) {
             return Result.fail().message("购买失败");
         }
+
+
         //异步队列写入订单
 //        因为队列是不能返回值的所以这里手动使用雪花算法生成ID
         Payment payment = new Payment();
@@ -99,6 +103,8 @@ public class AlipayServiceImpl implements AlipayService {
         payment.setFinalPaymentAmount(voucherInfo.getPrice());//最终支付金额,购买优惠券不能使用优惠券所以最终金额是一样的
 
         rabbitTemplate.convertAndSend("paymentExchange", "payment.create", JSONUtil.toJsonStr(payment));
+        //加入延迟队列,开始计时30分钟 发送订单ID
+        rabbitTemplate.convertAndSend("30M-delayQueue", assign_id.toString());
         return Result.ok().data(assign_id);
     }
 

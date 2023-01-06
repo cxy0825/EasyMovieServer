@@ -18,6 +18,6 @@ public class MyInterceptionConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(VerifyAdminInterceptor())
                 .addPathPatterns("/order/**")
-                .excludePathPatterns(new String[]{"/order/public/**", "/order/aliPay/payNotify"});
+                .excludePathPatterns(new String[]{"/order/public/**", "/order/aliPay/payNotify", "/order/payment/**"});
     }
 }

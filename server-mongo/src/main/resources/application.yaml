@@ -26,6 +26,10 @@ spring:
     username: admin
     password: admin
     virtual-host: em
+    listener:
+      direct:
+        retry:
+          max-attempts: 5
   data:
     mongodb:
       #      uri: mongodb://192.168.188.137:27017/easyMovie?authSource=admin

@@ -2,6 +2,7 @@ package com.cxy.service.impl;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.entry.HoldVoucher;
@@ -81,6 +82,15 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
         holdVoucherService.save(holdVoucher);
         System.out.println("优惠券持有表添加数据完成");
 
+    }
+
+    @Override
+    public Payment getInfoByID(Long paymentID) {
+
+        LambdaQueryWrapper<Payment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Payment::getId, paymentID);
+        Payment payment = baseMapper.selectOne(queryWrapper);
+        return payment;
     }
 
 }

@@ -29,12 +29,18 @@ public class MovieHouseController {
         return moviehouseService.getMovieHouseWithCinema(page, limit, name);
     }
 
-    //根据ID获取电影院信息
+    //根据ID获取电影院信息(管理员用)
     @GetMapping("/movieHouse/list/{ID}")
     public Result getMovieHouseById(
             @PathVariable("ID") Long ID
     ) {
         return moviehouseService.getMovieHouseWithCinemaById(ID);
+    }
+
+    @GetMapping("public/movieHouse/{ID}")
+    public Result getMovieHouse(@PathVariable("ID") Long ID) {
+        Moviehouse moviehouse = moviehouseService.getById(ID);
+        return Result.ok().data(moviehouse);
     }
 
     //查看电影厅的座位信息
