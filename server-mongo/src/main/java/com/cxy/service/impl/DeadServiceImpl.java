@@ -50,6 +50,7 @@ public class DeadServiceImpl implements DeadService {
 
             }
         } catch (Exception e) {
+            System.out.println("死信队列出错");
             e.printStackTrace();
         }
 
