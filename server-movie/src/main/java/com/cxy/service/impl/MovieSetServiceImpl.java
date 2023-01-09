@@ -42,6 +42,11 @@ public class MovieSetServiceImpl extends ServiceImpl<MovieSetMapper, MovieSet>
         return baseMapper.getMovieSetInfoById(ID);
     }
 
+    @Override
+    public MovieSet getInfo(Long movieSetID) {
+        MovieSet movieSet = mongoClient.getMovieSetByID(movieSetID);
+        return movieSet;
+    }
 
     @Override
     public Page<MovieSetDto> getMovieSetInfoByFilmName(Page<MovieSetDto> movieSetPage, String name, Long cinemaID) {
@@ -160,6 +165,8 @@ public class MovieSetServiceImpl extends ServiceImpl<MovieSetMapper, MovieSet>
 
         return movieSets;
     }
+
+
 }
 
 

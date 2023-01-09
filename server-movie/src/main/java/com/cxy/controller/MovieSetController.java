@@ -29,6 +29,18 @@ public class MovieSetController {
     }
 
     /**
+     * 通过id获取排片详细信息 包含已售的座位
+     *
+     * @param ID id
+     * @return {@link Result}
+     */
+    @GetMapping("public/movieSet/info/all/{movieSetID}")
+    public Result info(@PathVariable("movieSetID") Long movieSetID) {
+        MovieSet movieSet = movieSetService.getInfo(movieSetID);
+        return Result.ok().data(movieSet);
+    }
+
+    /**
      * 按照电影院ID 获得电影片场信息
      *
      * @param page     页面
@@ -123,4 +135,6 @@ public class MovieSetController {
 
         return movieSetService.getLastMovieInfo(movieHouseID);
     }
+
+
 }

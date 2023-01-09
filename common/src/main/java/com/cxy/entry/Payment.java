@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -46,7 +47,7 @@ public class Payment implements Serializable {
     /**
      * 支付金额
      */
-    private Long paymentAmount;
+    private BigDecimal paymentAmount;
 
     /**
      * 优惠券ID
@@ -56,12 +57,12 @@ public class Payment implements Serializable {
     /**
      * 优惠金额
      */
-    private Long preferentialAmount;
+    private BigDecimal preferentialAmount = BigDecimal.valueOf(0);
 
     /**
      * 最终支付金额
      */
-    private Long finalPaymentAmount;
+    private BigDecimal finalPaymentAmount;
 
     /**
      * 支付状态 待支付 放弃支付 支付完成

@@ -31,7 +31,6 @@ public class DeadServiceImpl implements DeadService {
     ))
     public void cancelOrder(Message message) {
         try {
-            Thread.sleep(10000);
             String msg = new String(message.getBody(), StandardCharsets.UTF_8);
             System.out.println(msg.toString());
             Long paymentID = Long.valueOf(msg);
@@ -44,7 +43,7 @@ public class DeadServiceImpl implements DeadService {
                 payment.setPaymentStatus(CANCEL_STATUS);
                 //修改状态
                 orderClient.update(payment);
-
+                //去mongo中取消座位信息
                 //发送短信
                 new DingDingUtil().sendMsg("用户ID:" + payment.getUserId() + "\n" + "购买的商品:" + payment.getProductId() + "\n 超过30分钟未付款,订单已经自动取消");
 

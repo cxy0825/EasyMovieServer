@@ -55,4 +55,13 @@ public interface MongoClient {
     public List<MovieSet> getTodayInfo(
             @PathVariable("cinemaID") Long cinemaID,
             @PathVariable("filmID") Long filmID);
+
+    @GetMapping("/mongo/movieSet/getInfo/{ID}")
+    public MovieSet getMovieSetByID(@PathVariable("ID") Long ID);
+
+    //根据ID添加座位
+    @PostMapping("/mongo/movieSet/addSeat/{movieSetId}")
+    public void addSeat(
+            @PathVariable("movieSetId") Long movieSetId,
+            @RequestBody(required = false) Integer[][] buyArrs);
 }

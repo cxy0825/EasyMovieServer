@@ -2,6 +2,7 @@ package com.cxy.service;
 
 import com.cxy.entry.OrderParam;
 import com.cxy.entry.buyParam;
+import com.cxy.entry.movieTicketParam;
 import com.cxy.result.Result;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,5 +14,5 @@ public interface AlipayService {
 
     Result buyVoucherLimit(buyParam buyParam);
 
-    Result buyVoucher(buyParam buyParam);
+    Result buy(movieTicketParam movieTicketParam);
 }

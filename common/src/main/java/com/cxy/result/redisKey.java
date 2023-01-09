@@ -18,7 +18,7 @@ public enum redisKey {
     //已经购买过此优惠券的用户
     VOUCHER_ALREADY_BOUGHT("voucher:already:bought:");
 
-
+    
     private String key;
 
 }

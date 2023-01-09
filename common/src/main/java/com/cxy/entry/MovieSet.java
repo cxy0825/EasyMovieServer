@@ -62,7 +62,11 @@ public class MovieSet implements Serializable {
      * 票价
      */
     private BigDecimal price;
-
+    /**
+     * 该排片已经购买的票
+     */
+    @TableField(exist = false)
+    private Integer[][] seatInfo = new Integer[][]{};
     /**
      *
      */

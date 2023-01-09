@@ -30,4 +30,6 @@ public interface MovieSetService extends IService<MovieSet> {
     Result MovieSetInfo(Page<MovieSetDto> movieSetPage, Long cinemaId);
 
     List<MovieSet> getTodayInfo(Long cinemaID, Long filmID);
+
+    MovieSet getInfo(Long movieSetID);
 }

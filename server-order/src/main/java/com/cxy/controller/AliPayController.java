@@ -2,6 +2,7 @@ package com.cxy.controller;
 
 import com.cxy.entry.OrderParam;
 import com.cxy.entry.buyParam;
+import com.cxy.entry.movieTicketParam;
 import com.cxy.result.Result;
 import com.cxy.service.AlipayService;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +34,9 @@ public class AliPayController {
         return alipayService.buyVoucherLimit(buyParam);
     }
 
-    //购买优惠券商品(不限制数量)
-    @PostMapping("/buyVoucher")
-    public Result buyVoucher(@RequestBody buyParam buyParam) {
-        return alipayService.buyVoucher(buyParam);
+    //购买商品(不限制数量)
+    @PostMapping("/buy")
+    public Result buyVoucher(@RequestBody movieTicketParam movieTicketParam) {
+        return alipayService.buy(movieTicketParam);
     }
 }

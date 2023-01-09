@@ -4,6 +4,7 @@ import com.cxy.entry.MovieSet;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -55,5 +56,19 @@ public class MongoMovieSetController {
         Query query = new Query(criteria);
         List<MovieSet> movieSets = mongoTemplate.find(query, MovieSet.class);
         return movieSets;
+    }
+
+    //根据ID添加座位
+    @PostMapping("/addSeat/{movieSetId}")
+    public void addSeat(
+            @PathVariable("movieSetId") Long movieSetId,
+            @RequestBody Integer[][] buyArrs) {
+        Criteria criteria = new Criteria();
+        criteria.andOperator(Criteria.where("_id").is(movieSetId));
+        Query query = new Query(criteria);
+        Update update = new Update();
+        Update.AddToSetBuilder ab = update.new AddToSetBuilder("seatInfo");
+        ab.each(buyArrs);
+        mongoTemplate.upsert(query, update, MovieSet.class);
     }
 }
