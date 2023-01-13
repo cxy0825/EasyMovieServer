@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -36,7 +37,7 @@ public class Performer implements Serializable {
      * 演员出生日期
      */
     @JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
-    private LocalDateTime birthday;
+    private LocalDate birthday;
 
     /**
      * 演员简介

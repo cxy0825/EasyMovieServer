@@ -1,6 +1,7 @@
 package com.cxy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.entry.Performer;
 import com.cxy.entry.PerformerIndex;
@@ -53,9 +54,21 @@ public class PerformerServiceImpl extends ServiceImpl<PerformerMapper, Performer
             Result filmInfoByID = filmService.getFilmInfoByID(item.getFilmId());
             return filmInfoByID.getData();
         }).collect(Collectors.toList());
-        
+
         return Result.ok().data(filmList);
     }
+
+    @Override
+    public Page<Performer> getInfoList(Page<Performer> performerPage, Performer performer) {
+        LambdaQueryWrapper<Performer> queryWrapper = new LambdaQueryWrapper<>();
+        if (null != performer && null != performer.getPerformerName()) {
+            queryWrapper.like(Performer::getPerformerName, performer.getPerformerName());
+        }
+        baseMapper.selectPage(performerPage, queryWrapper);
+        return performerPage;
+    }
+
+
 }
 
 

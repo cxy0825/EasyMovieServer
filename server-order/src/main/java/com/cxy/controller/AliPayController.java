@@ -1,6 +1,5 @@
 package com.cxy.controller;
 
-import com.cxy.entry.OrderParam;
 import com.cxy.entry.buyParam;
 import com.cxy.entry.movieTicketParam;
 import com.cxy.result.Result;
@@ -16,9 +15,9 @@ public class AliPayController {
     @Resource
     AlipayService alipayService;
 
-    @GetMapping("/pay")
-    public Result aliPay(OrderParam orderParam) throws Exception {
-        return alipayService.alipay(orderParam);
+    @GetMapping("/pay/{paymentID}")
+    public Result aliPay(@PathVariable("paymentID") Long paymentID) throws Exception {
+        return alipayService.alipay(paymentID);
     }
 
     @PostMapping("/payNotify")

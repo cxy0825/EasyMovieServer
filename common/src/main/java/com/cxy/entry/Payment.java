@@ -38,11 +38,19 @@ public class Payment implements Serializable {
      * 购买的商品ID
      */
     private Long productId;
-
+    /*
+     * 商品类型
+     * */
+    private String productType;
     /**
      * 购买的商品数量
      */
     private Integer productNum;
+
+    /**
+     * 电影票的座位信息
+     */
+    private String productInfo;
 
     /**
      * 支付金额

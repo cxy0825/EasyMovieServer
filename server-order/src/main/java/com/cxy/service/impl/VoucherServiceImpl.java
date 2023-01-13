@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.Utils.ThreadLocalUtil;
 import com.cxy.clients.mongo.RedisClient;
+import com.cxy.entry.HoldVoucher;
 import com.cxy.entry.Token;
 import com.cxy.entry.Voucher;
 import com.cxy.mapper.VoucherMapper;
 import com.cxy.result.Result;
 import com.cxy.result.ResultEnum;
 import com.cxy.result.redisKey;
+import com.cxy.service.HoldVoucherService;
+import com.cxy.service.PaymentService;
 import com.cxy.service.VoucherService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.beans.Transient;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Cccxy
@@ -32,7 +36,10 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher>
     RedisClient redisClient;
     @Resource
     RabbitTemplate rabbitTemplate;
-
+    @Resource
+    PaymentService paymentService;
+    @Resource
+    HoldVoucherService holdVoucherService;
 
     @Override
     public Page<Voucher> getVoucherList(Page<Voucher> voucherPage, Voucher voucher) {
@@ -115,6 +122,24 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher>
             return Result.fail();
         }
 
+    }
+
+    @Override
+    public List<Voucher> getVoucherListByUserID(Long cinemaID) {
+        Token token = (Token) ThreadLocalUtil.get();
+        Long id = token.getId();
+        LambdaQueryWrapper<HoldVoucher> voucherLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        voucherLambdaQueryWrapper.eq(HoldVoucher::getUserId, id);
+        voucherLambdaQueryWrapper.eq(HoldVoucher::getState, 1);
+        List<HoldVoucher> list = holdVoucherService.list(voucherLambdaQueryWrapper);
+        List<Voucher> voucherList = list.stream().map(item -> {
+            //如果请求参数中包含电影院ID就查找指定电影院
+            if (null != cinemaID) {
+                return baseMapper.selectOne(new LambdaQueryWrapper<Voucher>().eq(Voucher::getCinemaId, cinemaID));
+            }
+            return baseMapper.selectById(item.getVoucherId());
+        }).collect(Collectors.toList());
+        return voucherList;
     }
 
 

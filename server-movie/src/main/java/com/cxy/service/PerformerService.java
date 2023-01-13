@@ -1,5 +1,6 @@
 package com.cxy.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cxy.entry.Performer;
 import com.cxy.result.Result;
@@ -16,4 +17,8 @@ public interface PerformerService extends IService<Performer> {
     Result getInfoByID(Long ID);
 
     Result getPerformByID(Long ID);
+
+    Page<Performer> getInfoList(Page<Performer> performerPage, Performer performer);
+
+
 }

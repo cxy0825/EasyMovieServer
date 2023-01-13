@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.cxy.entry.Voucher;
 import com.cxy.result.Result;
 
+import java.util.List;
+
 /**
  * @author Cccxy
  * @description 针对表【voucher(全局优惠券所有店铺都能使用)】的数据库操作Service
@@ -21,4 +23,5 @@ public interface VoucherService extends IService<Voucher> {
     Result del(Long id);
 
 
+    List<Voucher> getVoucherListByUserID(Long cinemaID);
 }

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxy.entry.HoldVoucher;
 import com.cxy.entry.Payment;
 import com.cxy.mapper.PaymentMapper;
+import com.cxy.service.HoldTicketService;
 import com.cxy.service.HoldVoucherService;
 import com.cxy.service.PaymentService;
 import org.springframework.amqp.core.ExchangeTypes;
@@ -32,7 +33,10 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
 
     @Resource
     HoldVoucherService holdVoucherService;
-
+    @Resource
+    HoldTicketService holdTicketService;
+    @Resource
+    PaymentService paymentService;
 
     //创建订单
     @Override
@@ -43,8 +47,10 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
     ))
     public void createPayment(Message message) {
         String msg = new String(message.getBody());
+
         //json转成对象
         Payment payment = JSONUtil.toBean(msg, Payment.class);
+
         //存入到数据库
         baseMapper.insert(payment);
         System.out.println("订单存入数据库完成");
@@ -62,6 +68,7 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
     public void paymentCallback(Message message) {
         String msg = new String(message.getBody());
         JSONObject jsonObj = JSONUtil.parseObj(msg);
+
         LambdaUpdateWrapper<Payment> paymentLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         paymentLambdaUpdateWrapper.eq(Payment::getId, jsonObj.getStr("out_trade_no"));
         paymentLambdaUpdateWrapper.set(Payment::getPaymentStatus, "已支付");
@@ -71,16 +78,19 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
         //更新到数据库
         baseMapper.update(null, paymentLambdaUpdateWrapper);
         System.out.println("支付宝回调写入数据库完成");
-        //根据订单ID去查询优惠券ID
+        //根据订单ID去查询订单
         Payment payment = baseMapper.selectById(jsonObj.getStr("out_trade_no"));
         Long productId = payment.getProductId();
         Long userId = payment.getUserId();
-        //在优惠券持有表把优惠券 和用户ID写入
-        HoldVoucher holdVoucher = new HoldVoucher();
-        holdVoucher.setVoucherId(productId);
-        holdVoucher.setUserId(userId);
-        holdVoucherService.save(holdVoucher);
-        System.out.println("优惠券持有表添加数据完成");
+        if (payment.getProductType().equals("voucher")) {
+            //在优惠券持有表把优惠券 和用户ID写入
+            HoldVoucher holdVoucher = new HoldVoucher();
+            holdVoucher.setVoucherId(productId);
+            holdVoucher.setUserId(userId);
+            holdVoucherService.save(holdVoucher);
+            System.out.println("优惠券持有表添加数据完成");
+        }
+
 
     }
 

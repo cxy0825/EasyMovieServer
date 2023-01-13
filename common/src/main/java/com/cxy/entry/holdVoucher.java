@@ -26,7 +26,10 @@ public class holdVoucher implements Serializable {
      * 优惠券ID
      */
     private Long voucherId;
-
+    /*
+     *
+     * 是否使用
+     * */
     /**
      * 抢到优惠券的用户ID
      */

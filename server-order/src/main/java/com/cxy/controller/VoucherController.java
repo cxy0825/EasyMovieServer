@@ -7,6 +7,7 @@ import com.cxy.service.VoucherService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/order/voucher")
@@ -29,10 +30,22 @@ public class VoucherController {
         return Result.ok().data(voucherPage);
     }
 
+    /*
+     * 根据电影院ID查询优惠券
+     * */
     @GetMapping("/voucherList/{cinemaID}")
     public Result voucherList(@PathVariable("cinemaID") Long cinemaID) {
 
         return voucherService.getVoucherList(cinemaID);
+    }
+
+    /*
+     * 查询用户持有的优惠券
+     * */
+    @GetMapping("/user")
+    public Result voucherByUser(@RequestParam(value = "cinemaID", required = false) Long cinemaID) {
+        List<Voucher> list = voucherService.getVoucherListByUserID(cinemaID);
+        return Result.ok().data(list);
     }
 
     /**

@@ -1,8 +1,10 @@
 package com.cxy.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.cxy.Utils.DingDingUtil;
 import com.cxy.clients.order.OrderClient;
 import com.cxy.entry.Payment;
+import com.cxy.result.Result;
 import com.cxy.service.DeadService;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
@@ -35,8 +37,8 @@ public class DeadServiceImpl implements DeadService {
             System.out.println(msg.toString());
             Long paymentID = Long.valueOf(msg);
             //根据订单号查询订单数据库
-            Payment payment = orderClient.getInfoByID(paymentID);
-
+            Result paymentInfo = orderClient.getInfoByID(paymentID);
+            Payment payment = JSONUtil.toBean((String) paymentInfo.getData(), Payment.class);
             //如果payment_status是待支付就修改成超时取消
             if (null != payment && payment.getPaymentStatus().equals("待支付")) {
                 //设置为超时取消

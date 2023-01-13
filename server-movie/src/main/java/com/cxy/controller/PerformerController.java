@@ -1,11 +1,13 @@
 package com.cxy.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cxy.entry.Performer;
 import com.cxy.result.Result;
+import com.cxy.service.FileService;
 import com.cxy.service.PerformerService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -15,6 +17,27 @@ public class PerformerController {
 
     @Resource
     PerformerService performerService;
+    @Resource
+    FileService fileService;
+
+    /**
+     * 得到信息列表
+     *
+     * @param page      页面
+     * @param limit     限制
+     * @param performer 表演者
+     * @return {@link Result}
+     */
+    @GetMapping("public/info/list/{page}/{limit}")
+    public Result getInfoList(
+            @PathVariable("page") Integer page,
+            @PathVariable("limit") Integer limit,
+            Performer performer
+    ) {
+        Page<Performer> performerPage = new Page<>(page, limit);
+        Page<Performer> p = performerService.getInfoList(performerPage, performer);
+        return Result.ok().data(p);
+    }
 
     //根据电影ID查询演员信息
     @GetMapping("public/info/{filmID}")
@@ -32,5 +55,27 @@ public class PerformerController {
     @GetMapping("public/performInfo/{ID}")
     public Result getPerformByID(@PathVariable("ID") Long ID) {
         return performerService.getPerformByID(ID);
+    }
+
+    @GetMapping("del/{ID}")
+    public Result del(@PathVariable("ID") Long ID) {
+        performerService.removeById(ID);
+        return Result.ok();
+    }
+
+    @PostMapping("update")
+    public Result update(@RequestBody Performer performer) {
+        performerService.saveOrUpdate(performer);
+        return Result.ok();
+    }
+
+    @PostMapping("upload/{ID}")
+    public Result upload(@RequestPart("uploadFile") MultipartFile multipartFile, @PathVariable("ID") Long ID) {
+        String upload = fileService.upload(multipartFile);
+        LambdaUpdateWrapper<Performer> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Performer::getId, ID);
+        updateWrapper.set(Performer::getPerformerPicUrl, upload);
+        performerService.update(updateWrapper);
+        return Result.ok().data(upload);
     }
 }
