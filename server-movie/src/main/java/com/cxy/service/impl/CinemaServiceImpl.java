@@ -26,7 +26,6 @@ public class CinemaServiceImpl extends ServiceImpl<CinemaMapper, Cinema>
 
     @Override
     public boolean add(Cinema cinema) {
-        System.out.println("aaa");
         //id不为空表示修改
         if (cinema.getId() != null) {
 
@@ -56,14 +55,20 @@ public class CinemaServiceImpl extends ServiceImpl<CinemaMapper, Cinema>
     public Cinema getInfo(Long id) {
         //先去mongo中查询改电影院信息
         Result cinemaInfo = mongoClient.getCinemaInfo(id);
-        if (cinemaInfo.getData() != null) {
-
-            String s = JSONUtil.toJsonStr(cinemaInfo.getData());
-            Cinema cinema = JSONUtil.toBean(s, Cinema.class);
+        String s = JSONUtil.toJsonStr(cinemaInfo.getData());
+        Cinema cinema = JSONUtil.toBean(s, Cinema.class);
+        if (null != cinema.getId()) {
             return cinema;
         }
         //否则去数据库查找
-        Cinema cinema = baseMapper.selectById(id);
+        cinema = baseMapper.selectById(id);
+        //查找到添加到mongo
+        MongoCinema mongoCinema = BeanUtil.copyProperties(cinema, MongoCinema.class);
+        double x = cinema.getX();
+        double y = cinema.getY();
+        //添加经纬度
+        mongoCinema.setJw(new double[]{y, x});
+        boolean add = mongoClient.add(mongoCinema);
         return cinema;
     }
 }

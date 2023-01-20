@@ -1,10 +1,13 @@
 package com.cxy.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cxy.entry.Performer;
+import com.cxy.entry.PerformerIndex;
 import com.cxy.result.Result;
 import com.cxy.service.FileService;
+import com.cxy.service.PerformerIndexService;
 import com.cxy.service.PerformerService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +20,9 @@ public class PerformerController {
 
     @Resource
     PerformerService performerService;
+
+    @Resource
+    PerformerIndexService performerIndexService;
     @Resource
     FileService fileService;
 
@@ -57,6 +63,19 @@ public class PerformerController {
         return performerService.getPerformByID(ID);
     }
 
+    //给电影添加演员
+    @GetMapping("/addPerformer")
+    public Result addPerformer(
+            @RequestParam("filmID") Long filmID,
+            @RequestParam("performerID") Long performerID
+    ) {
+        PerformerIndex performerIndex = new PerformerIndex();
+        performerIndex.setFilmId(filmID);
+        performerIndex.setPerformerId(performerID);
+        performerIndexService.save(performerIndex);
+        return Result.ok();
+    }
+
     @GetMapping("del/{ID}")
     public Result del(@PathVariable("ID") Long ID) {
         performerService.removeById(ID);
@@ -77,5 +96,21 @@ public class PerformerController {
         updateWrapper.set(Performer::getPerformerPicUrl, upload);
         performerService.update(updateWrapper);
         return Result.ok().data(upload);
+    }
+
+    //删除电影下对应的演员
+    @GetMapping("del/index")
+    public Result delIndex(
+
+            @RequestParam("filmID") Long filmID,
+            @RequestParam("performerID") Long performerID
+
+    ) {
+        performerIndexService.remove(
+                new LambdaQueryWrapper<PerformerIndex>()
+                        .eq(PerformerIndex::getFilmId, filmID)
+                        .eq(PerformerIndex::getPerformerId, performerID)
+        );
+        return Result.ok();
     }
 }
