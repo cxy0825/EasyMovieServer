@@ -19,4 +19,6 @@ public interface UserService extends IService<User> {
     Result getAdminInfo(String token);
 
     Result code(String phone);
+
+    Result openingVIP(String token);
 }

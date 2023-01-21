@@ -126,6 +126,7 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher>
 
     @Override
     public List<Voucher> getVoucherListByUserID(Long cinemaID) {
+
         Token token = (Token) ThreadLocalUtil.get();
         Long id = token.getId();
         LambdaQueryWrapper<HoldVoucher> voucherLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -135,7 +136,7 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher>
         List<Voucher> voucherList = list.stream().map(item -> {
             //如果请求参数中包含电影院ID就查找指定电影院
             if (null != cinemaID) {
-                return baseMapper.selectOne(new LambdaQueryWrapper<Voucher>().eq(Voucher::getCinemaId, cinemaID));
+                return baseMapper.selectOne(new LambdaQueryWrapper<Voucher>().eq(Voucher::getCinemaId, cinemaID).eq(Voucher::getId, item.getVoucherId()));
             }
             return baseMapper.selectById(item.getVoucherId());
         }).collect(Collectors.toList());

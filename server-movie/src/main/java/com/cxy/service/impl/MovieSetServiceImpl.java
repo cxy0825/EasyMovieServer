@@ -83,7 +83,18 @@ public class MovieSetServiceImpl extends ServiceImpl<MovieSetMapper, MovieSet>
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return Result.fail(ResultEnum.TIME_OVERLAP);
             } else {
-                return Result.ok();
+
+                //去mongo中删除当前的排片信息,
+                Boolean del = mongoClient.updata(movieSet);
+                if (del) {
+                    return Result.ok();
+                } else {
+                    //mongo删除失败回滚事务
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    return Result.fail().data("缓存更新失败");
+                }
+
+
             }
 
         } else {

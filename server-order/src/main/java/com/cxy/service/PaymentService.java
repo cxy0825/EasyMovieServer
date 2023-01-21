@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.cxy.entry.Payment;
 import org.springframework.amqp.core.Message;
 
+import java.util.List;
+
 /**
  * @author Cccxy
  * @description 针对表【payment(支付宝支付订单信息表)】的数据库操作Service
@@ -17,4 +19,6 @@ public interface PaymentService extends IService<Payment> {
     void paymentCallback(Message message);
 
     Payment getInfoByID(Long paymentID);
+
+    List<Payment> getOrderList();
 }

@@ -51,6 +51,11 @@ public class UserController {
         return userService.getAdminInfo(token);
     }
 
+    @PostMapping("/vip/open")
+    public Result opening(@RequestHeader("token") String token) {
+        return userService.openingVIP(token);
+
+    }
 
 }
 

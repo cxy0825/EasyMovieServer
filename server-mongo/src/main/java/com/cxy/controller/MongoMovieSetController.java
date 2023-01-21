@@ -1,6 +1,7 @@
 package com.cxy.controller;
 
 import com.cxy.entry.MovieSet;
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -34,6 +35,29 @@ public class MongoMovieSetController {
     public MovieSet getMovieSetByID(@PathVariable("ID") Long ID) {
         MovieSet movieSet = mongoTemplate.findById(ID, MovieSet.class);
         return movieSet;
+    }
+
+    //根据ID修改mongo中的位置信息
+    @PostMapping("/updata")
+    public Boolean updata(@RequestBody MovieSet movieSet) {
+        //先查询有没有记录
+        MovieSet movieSet1 = mongoTemplate.findById(movieSet.getId(), MovieSet.class);
+        if (null == movieSet1) {
+            return true;
+        }
+        //有记录就修改
+        Update update = new Update();
+        update.set("movieStartTime", movieSet.getMovieStartTime());
+        update.set("movieEndTime", movieSet.getMovieEndTime());
+        UpdateResult updateResult = mongoTemplate.updateFirst(
+                Query.query(Criteria.where("_id").is(movieSet.getId())),
+                update,
+                "em_movieSet"
+        );
+        if (updateResult.getModifiedCount() >= 1) {
+            return true;
+        }
+        return false;
     }
 
     //获取某个电影院今天的排片情况

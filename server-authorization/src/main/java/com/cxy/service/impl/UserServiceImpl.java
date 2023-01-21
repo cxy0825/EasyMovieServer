@@ -164,6 +164,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return Result.ok().message("发送成功");
     }
 
+    @Override
+    public Result openingVIP(String token) {
+        //从token中分离签名出来
+        String sign = token.substring(token.lastIndexOf(".") + 1);
+        //解析token
+        JWT jwt = JWTUtil.parseToken(token);
+        //获取账号
+        String account = (String) jwt.getPayload("account");
+        //去redis获取信息
+        Token userInfo = redisClient.getUserInfo(account, sign);
+        System.out.println(userInfo.toString());
+        //获取不到信息
+        if (null == userInfo) {
+            return Result.fail(ResultEnum.MISS_USER);
+        }
+        //如果已经是vip了
+        if (userInfo.getPower().equals("1")) {
+            return Result.fail().message("已经是VIP了");
+        }
+        //没有问题就进入开通流程
+        //先修改数据库的vip
+        User user = new User();
+        user.setId(userInfo.getId());
+        user.setPower(1);
+        baseMapper.updateById(user);
+        //重新生成token(这一步封装了存入到redis)
+        userInfo.setPower("1");
+        String data = authorizationService.createToken(userInfo);
+        return Result.ok().data(data);
+    }
+
 }
 
 

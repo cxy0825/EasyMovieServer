@@ -5,10 +5,11 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cxy.Utils.ThreadLocalUtil;
 import com.cxy.entry.HoldVoucher;
 import com.cxy.entry.Payment;
+import com.cxy.entry.Token;
 import com.cxy.mapper.PaymentMapper;
-import com.cxy.service.HoldTicketService;
 import com.cxy.service.HoldVoucherService;
 import com.cxy.service.PaymentService;
 import org.springframework.amqp.core.ExchangeTypes;
@@ -20,6 +21,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Cccxy
@@ -33,8 +35,7 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
 
     @Resource
     HoldVoucherService holdVoucherService;
-    @Resource
-    HoldTicketService holdTicketService;
+
     @Resource
     PaymentService paymentService;
 
@@ -101,6 +102,21 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment>
         queryWrapper.eq(Payment::getId, paymentID);
         Payment payment = baseMapper.selectOne(queryWrapper);
         return payment;
+    }
+
+    @Override
+    public List<Payment> getOrderList() {
+
+        Token token = (Token) ThreadLocalUtil.get();
+        System.out.println(token);
+        Long userId = token.getId();
+        LambdaQueryWrapper<Payment> paymentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        paymentLambdaQueryWrapper.eq(Payment::getProductType, "ticket");
+        paymentLambdaQueryWrapper.eq(Payment::getUserId, userId);
+        paymentLambdaQueryWrapper.select(Payment.class, item -> !item.getColumn().equals("callback_content"));
+//        paymentLambdaQueryWrapper.(Payment::getUserId, userId);
+        List<Payment> payments = baseMapper.selectList(paymentLambdaQueryWrapper);
+        return payments;
     }
 
 }

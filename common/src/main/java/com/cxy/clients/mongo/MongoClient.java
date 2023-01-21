@@ -64,4 +64,8 @@ public interface MongoClient {
     public void addSeat(
             @PathVariable("movieSetId") Long movieSetId,
             @RequestBody(required = false) Integer[][] buyArrs);
+
+    //根据ID更新排片记录
+    @PostMapping("/mongo/movieSet/updata")
+    public Boolean updata(@RequestBody MovieSet movieSet);
 }
